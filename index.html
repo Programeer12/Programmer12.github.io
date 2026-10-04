@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Portfolio of a cybersecurity student — penetration testing, secure development, and projects." />
+  <meta name="author" content="Your Name" />
+
+  <title>Abin Kuriakose | Cybersecurity Student</title>
+
+  <!-- Favicon (optional): drop a favicon.ico next to index.html, or delete this line -->
+  <link rel="icon" href="favicon.ico" />
+
+  <!-- Google Fonts: preconnect improves load performance -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <!-- Skip link for keyboard/accessible users -->
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <!-- ============================================================
+       BACKGROUND DECOR
+       ------------------------------------------------------------
+       The grid and the scanline are NOT elements — they are
+       pseudo-elements on <body> (body::before and body::after in
+       style.css), so they cost zero extra markup. Only the soft cyan
+       bloom needs a real element, because it has its own drift loop.
+       ============================================================ -->
+  <div class="bg-glow" aria-hidden="true"></div>
+
+  <!-- ============================================================
+       1) NAVBAR — fixed top, anchors to each section
+       ============================================================ -->
+  <header class="navbar" id="navbar">
+    <nav class="nav container" aria-label="Main navigation">
+
+      <!-- Logo / name. Change the text and the tagline below. -->
+      <a href="#hero" class="nav__brand">
+        <span class="nav__brand-mark">&gt;_</span>
+        <span class="nav__brand-text">
+          <span class="accent">Abin Kuriakose</span>
+          <small class="nav__brand-sub">cybersecurity</small>
+        </span>
+      </a>
+
+      <!-- Mobile hamburger button. The <span> elements are the hamburger lines. -->
+      <button
+        class="nav__toggle"
+        id="navToggle"
+        aria-expanded="false"
+        aria-controls="navMenu"
+        aria-label="Toggle navigation menu"
+      >
+        <span></span><span></span><span></span>
+      </button>
+
+      <!-- Anchor links. To add a section: add <li> here + a matching <section id="..."> -->
+      <ul class="nav__menu" id="navMenu">
+        <li><a href="#about"   class="nav__link">About</a></li>
+        <li><a href="#projects" class="nav__link">Projects</a></li>
+        <li><a href="#skills"  class="nav__link">Skills</a></li>
+        <li><a href="#contact" class="nav__link">Contact</a></li>
+        <!-- Add your resume link here, e.g.:
+        <li><a href="resume.pdf" class="nav__link" target="_blank" rel="noopener">Resume</a></li>
+        -->
+      </ul>
+    </nav>
+  </header>
+
+  <main id="main">
+
+    <!-- ============================================================
+         2) HERO — name, title, intro line, CTA button
+         ============================================================ -->
+    <section class="hero" id="hero">
+
+      <!-- Left column: the copy.
+           Every block has class="reveal" plus an --i stagger index so the
+           text cascades in. --i is multiplied by --reveal-step in CSS. -->
+      <div class="container hero__inner">
+
+        <!-- Terminal-style status pill. Edit the text or delete the whole <p>. -->
+        <p class="hero__status reveal" style="--i: 0">
+          <span class="dot" aria-hidden="true"></span>
+          Available for internships &amp; freelance
+        </p>
+
+        <h1 class="hero__title reveal" style="--i: 1">
+          Hi, I'm <span class="accent glow-pulse">Abin Kuriakose</span>
+        </h1>
+
+        <p class="hero__subtitle reveal" style="--i: 2">
+          Cybersecurity Student &amp; Penetration Tester<span class="type-cursor" aria-hidden="true"></span>
+        </p>
+
+        <p class="hero__text reveal" style="--i: 3">
+          I study how systems break so I can help make them harder to break. Currently
+          focused on web application security, network reconnaissance, and building
+          secure software from the ground up.
+        </p>
+
+        <div class="hero__actions reveal" style="--i: 4">
+          <!-- Primary CTA -->
+          <a href="#projects" class="btn btn--primary">
+            View My Projects
+            <span class="btn__icon" aria-hidden="true">&rarr;</span>
+          </a>
+          <!-- Secondary CTA -->
+          <a href="#contact" class="btn btn--ghost">Get in Touch</a>
+        </div>
+
+        <!-- Small stat row. Delete any <li> you don't want. -->
+        <ul class="hero__stats reveal" style="--i: 5">
+          <li><strong>4+</strong><span>Projects</span></li>
+          <li><strong>Learning</strong><span>Daily</span></li>
+          <li><strong>CTF</strong><span>Enthusiast</span></li>
+        </ul>
+      </div>
+
+      <!-- Right column: the terminal.
+
+           IMPORTANT — these three nested wrappers exist so that three
+           different things can own `transform` on this corner of the
+           page without overwriting each other:
+
+             .hero__visual  -> JS writes transform (mouse parallax)
+             .reveal        -> CSS writes transform (fade-in-up)
+             .terminal-float-> CSS writes transform (idle float)
+             .terminal      -> CSS writes box-shadow (hover glow only)
+
+           Don't merge them, or the effects will visibly stutter. -->
+      <div class="hero__visual reveal" style="--i: 2" aria-hidden="true">
+        <div class="reveal-inner">
+          <div class="terminal-float">
+            <div class="terminal">
+              <div class="terminal__bar">
+                <span class="terminal__dot"></span>
+                <span class="terminal__dot"></span>
+                <span class="terminal__dot"></span>
+                <span class="terminal__title">visitor@portfolio:~</span>
+              </div>
+              <!-- Each row is wrapped in .terminal__line. script.js staggers
+                   .is-typed across them so the block "types" itself in on load.
+                   NOTE: no leading whitespace inside this <pre> — it is
+                   white-space: pre, so indentation would be rendered. -->
+              <pre class="terminal__body"><code><span class="terminal__line"><span class="c-prompt">$</span> whoami</span>
+<span class="terminal__line"><span class="c-cyan">cybersecurity_student</span></span>
+<span class="terminal__line"></span>
+<span class="terminal__line"><span class="c-prompt">$</span> cat /etc/passions</span>
+<span class="terminal__line"><span class="c-prompt">$</span> nmap -sS target.local</span>
+<span class="terminal__line"><span class="c-green">  22/tcp    open  ssh</span></span>
+<span class="terminal__line"><span class="c-green">  80/tcp    open  http</span></span>
+<span class="terminal__line"><span class="c-green"> 443/tcp    open  https</span></span>
+<span class="terminal__line"></span>
+<span class="terminal__line"><span class="c-prompt">$</span> <span class="c-green">_</span><span class="caret"></span></span></code></pre>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         3) ABOUT — background, interest, what you're learning
+         ============================================================ -->
+    <section class="section" id="about">
+      <div class="container">
+        <header class="section__head">
+          <p class="section__eyebrow">&lt; about /&gt;</p>
+          <h2 class="section__title">About Me</h2>
+        </header>
+
+        <div class="about">
+          <!-- Optional code-style avatar. Delete this div to go text-only. -->
+          <aside class="about__aside">
+            <div class="avatar" aria-hidden="true">
+              <span class="avatar__prompt">&gt;_</span>
+              <span class="avatar__label">id: student</span>
+            </div>
+          </aside>
+
+          <div class="about__body">
+            <!-- EDIT: your background paragraph -->
+            <p>
+              I'm a cybersecurity student with a hands-on interest in offensive security.
+              My path started with web development — building things in PHP, MySQL, and
+              Flutter — which gave me an insider's view of how applications are put
+              together. That turned into a curiosity about where those assumptions break.
+            </p>
+            <p>
+              Right now I'm deep into <strong>web application security</strong>, network
+              fundamentals, and Linux tooling. You'll usually find me running enumeration
+              scripts, reading through Burp Suite write-ups, or breaking my own Flutter
+              apps to see how the mobile side behaves.
+            </p>
+            <p>
+              I care about clean, documented work — whether that's a penetration testing
+              report, a PHP endpoint that doesn't allow SQL injection, or a Flutter UI that
+              handles its state properly.
+            </p>
+
+            <!-- Currently learning badges -->
+            <ul class="about__learning">
+              <li>OWASP Top 10</li>
+              <li>Burp Suite / Intercepting Traffic</li>
+              <li>Linux &amp; Bash Scripting</li>
+              <li>Nmap &amp; Network Recon</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         4) PROJECTS — core section
+         ------------------------------------------------------------
+         HOW TO ADD A PROJECT:
+         1. Copy one <article class="card"> block below.
+         2. Change the icon, title, description, tags, and href.
+         3. For projects without a live link, replace the <a> with
+            <span class="card__link card__link--disabled">In progress</span>
+         ============================================================ -->
+    <section class="section" id="projects">
+      <div class="container">
+        <header class="section__head">
+          <p class="section__eyebrow">&lt; projects /&gt;</p>
+          <h2 class="section__title">Featured Projects</h2>
+          <p class="section__desc">
+            A mix of mobile apps I've shipped and a PHP platform I built end to end.
+          </p>
+        </header>
+
+        <div class="grid grid--cards">
+
+          <!-- ---------- PROJECT 1: URBAN_OAK ---------- -->
+          <article class="card reveal">
+            <div class="card__top">
+              <!-- Short text icon or emoji. Swap for an <img> logo if you have one. -->
+              <span class="card__icon" aria-hidden="true">&#9632;</span>
+              <div class="card__badges">
+                <span class="badge badge--live">Shipped</span>
+              </div>
+            </div>
+
+            <h3 class="card__title">URBAN_OAK</h3>
+            <p class="card__desc">
+              A Flutter-based furniture shopping app with product browsing, cart flow,
+              and a clean material-driven UI. <span class="muted">(More details to be added later.)</span>
+            </p>
+
+            <ul class="tags">
+              <li>Flutter</li>
+              <li>Dart</li>
+            </ul>
+
+            <!-- Replace "#" with your repo/live URL. Remove this <a> if none exists. -->
+            <a href="#" class="card__link" target="_blank" rel="noopener">
+              View project <span aria-hidden="true">&nearr;</span>
+            </a>
+          </article>
+
+          <!-- ---------- PROJECT 2: Hospital Ticket Booking App ---------- -->
+          <article class="card reveal">
+            <div class="card__top">
+              <span class="card__icon" aria-hidden="true">&#9776;</span>
+              <div class="card__badges">
+                <span class="badge badge--live">Shipped</span>
+              </div>
+            </div>
+
+            <h3 class="card__title">Hospital Ticket Booking App</h3>
+            <p class="card__desc">
+              A Flutter app for booking hospital appointments — pick a department,
+              choose a slot, and manage your queue ticket. <span class="muted">(More details later.)</span>
+            </p>
+
+            <ul class="tags">
+              <li>Flutter</li>
+              <li>Dart</li>
+            </ul>
+
+            <a href="#" class="card__link" target="_blank" rel="noopener">
+              View project <span aria-hidden="true">&nearr;</span>
+            </a>
+          </article>
+
+          <!-- ---------- PROJECT 3: Medify ---------- -->
+          <article class="card reveal">
+            <div class="card__top">
+              <span class="card__icon" aria-hidden="true">&#10048;</span>
+              <div class="card__badges">
+                <span class="badge badge--live">Shipped</span>
+              </div>
+            </div>
+
+            <h3 class="card__title">Medify</h3>
+            <p class="card__desc">
+              A Flutter medicine reminder app that schedules doses and stores them
+              locally, so schedules survive offline and app restarts.
+              <span class="muted">(More details later.)</span>
+            </p>
+
+            <ul class="tags">
+              <li>Flutter</li>
+              <li>Dart</li>
+              <li>Local Storage</li>
+            </ul>
+
+            <a href="#" class="card__link" target="_blank" rel="noopener">
+              View project <span aria-hidden="true">&nearr;</span>
+            </a>
+          </article>
+
+          <!-- ---------- PROJECT 4: Eddu Assign (live URL) ---------- -->
+          <article class="card reveal">
+            <div class="card__top">
+              <span class="card__icon" aria-hidden="true">&#9881;</span>
+              <div class="card__badges">
+                <span class="badge badge--live">Live</span>
+              </div>
+            </div>
+
+            <h3 class="card__title">Eddu Assign</h3>
+            <p class="card__desc">
+              A PHP-based assignment management and submission platform — students upload
+              work, track status, and staff review submissions, backed by a MySQL database.
+            </p>
+
+            <ul class="tags">
+              <li>PHP</li>
+              <li>MySQL</li>
+              <li>Web</li>
+            </ul>
+
+            <a href="https://eduassign.42web.io/?i=1" class="card__link" target="_blank" rel="noopener">
+              Visit site <span aria-hidden="true">&nearr;</span>
+            </a>
+          </article>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         5) SKILLS — tags + progress bars
+         ------------------------------------------------------------
+         The <ul class="tags"> list below is the easiest place to add a
+         skill. The progress bars are optional — edit the --val custom
+         property on each .meter__fill to change the percentage.
+         ============================================================ -->
+    <section class="section" id="skills">
+      <div class="container">
+        <header class="section__head">
+          <p class="section__eyebrow">&lt; skills /&gt;</p>
+          <h2 class="section__title">Skills &amp; Toolkit</h2>
+        </header>
+
+        <div class="skills">
+          <!-- Group 1: Development -->
+          <div class="skills__group reveal">
+            <h3 class="skills__group-title">Development</h3>
+            <ul class="tags">
+              <li>Flutter</li>
+              <li>Dart</li>
+              <li>PHP</li>
+              <li>MySQL</li>
+              <li>HTML</li>
+              <li>CSS</li>
+              <li>JavaScript</li>
+            </ul>
+          </div>
+
+          <!-- Group 2: Security -->
+          <div class="skills__group reveal">
+            <h3 class="skills__group-title">Security</h3>
+            <ul class="tags">
+              <li>Cybersecurity Fundamentals</li>
+              <li>OWASP Top 10</li>
+              <li>Burp Suite</li>
+              <li>Network Scanning</li>
+              <li>Vulnerability Assessment</li>
+            </ul>
+          </div>
+
+          <!-- Group 3: Platforms &amp; tools -->
+          <div class="skills__group reveal">
+            <h3 class="skills__group-title">Platforms &amp; Tools</h3>
+            <ul class="tags">
+              <li>Linux</li>
+              <li>Bash</li>
+              <li>Git</li>
+              <li>GitHub</li>
+              <li>Postman</li>
+              <li>Figma</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Optional proficiency bars.
+             Change --val from 0 to 100. Delete any <li> you don't need. -->
+        <div class="meters">
+          <ul class="meter">
+            <li class="meter__row">
+              <span class="meter__label">Flutter &amp; Dart</span>
+              <span class="meter__value">80%</span>
+            </li>
+            <li class="meter__track">
+              <span class="meter__fill" style="--val: 80%;"></span>
+            </li>
+          </ul>
+
+          <ul class="meter">
+            <li class="meter__row">
+              <span class="meter__label">PHP &amp; MySQL</span>
+              <span class="meter__value">70%</span>
+            </li>
+            <li class="meter__track">
+              <span class="meter__fill" style="--val: 70%;"></span>
+            </li>
+          </ul>
+
+          <ul class="meter">
+            <li class="meter__row">
+              <span class="meter__label">Cybersecurity Fundamentals</span>
+              <span class="meter__value">65%</span>
+            </li>
+            <li class="meter__track">
+              <span class="meter__fill" style="--val: 65%;"></span>
+            </li>
+          </ul>
+
+          <ul class="meter">
+            <li class="meter__row">
+              <span class="meter__label">Linux &amp; Networking</span>
+              <span class="meter__value">60%</span>
+            </li>
+            <li class="meter__track">
+              <span class="meter__fill" style="--val: 60%;"></span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         6) CONTACT — social links + front-end-only contact form
+         ============================================================ -->
+    <section class="section" id="contact">
+      <div class="container">
+        <header class="section__head">
+          <p class="section__eyebrow">&lt; contact /&gt;</p>
+          <h2 class="section__title">Get in Touch</h2>
+          <p class="section__desc">
+            Open to internship roles, freelance security work, or just a good CTF team-up.
+          </p>
+        </header>
+
+        <div class="contact">
+          <!-- Left: direct links -->
+          <div class="contact__links reveal">
+            <!-- EDIT: replace the placeholder email/handles below -->
+            <a class="social" href="mailto:your@email.com">
+              <span class="social__icon" aria-hidden="true">@</span>
+              <span class="social__body">
+                <strong>Email</strong>
+                <small>your@email.com</small>
+              </span>
+            </a>
+
+            <a class="social" href="https://github.com/Programeer12" target="_blank" rel="noopener">
+              <span class="social__icon" aria-hidden="true">&#9679;</span>
+              <span class="social__body">
+                <strong>GitHub</strong>
+                <small>@yourhandle</small>
+              </span>
+            </a>
+
+            <a class="social" href="www.linkedin.com/in/abin-kuriakose-027040322" target="_blank" rel="noopener">
+              <span class="social__icon" aria-hidden="true">in</span>
+              <span class="social__body">
+                <strong>LinkedIn</strong>
+                <small>/in/yourhandle</small>
+              </span>
+            </a>
+          </div>
+
+          <!-- Right: contact form.
+               This is FRONT-END ONLY. See the note in script.js for wiring
+               it to a real backend / Formspree endpoint. -->
+          <form class="form reveal" id="contactForm" novalidate>
+            <!-- Honeypot field — hidden from humans, catches most spam bots.
+                 Leave empty; script.js ignores submissions that fill it. -->
+            <input type="text" name="_gotcha" class="form__trap" tabindex="-1" autocomplete="off" aria-hidden="true" />
+
+            <div class="form__row">
+              <label class="form__label" for="name">Name</label>
+              <input class="form__input" type="text" id="name" name="name" placeholder="Jane Doe" required />
+              <small class="form__error" data-error-for="name"></small>
+            </div>
+
+            <div class="form__row">
+              <label class="form__label" for="email">Email</label>
+              <input class="form__input" type="email" id="email" name="email" placeholder="jane@example.com" required />
+              <small class="form__error" data-error-for="email"></small>
+            </div>
+
+            <div class="form__row">
+              <label class="form__label" for="message">Message</label>
+              <textarea class="form__input form__input--area" id="message" name="message" rows="5" placeholder="Tell me about the role or project…" required></textarea>
+              <small class="form__error" data-error-for="message"></small>
+            </div>
+
+            <button type="submit" class="btn btn--primary btn--full">
+              Send Message
+              <span class="btn__icon" aria-hidden="true">&rarr;</span>
+            </button>
+
+            <!-- Status message. script.js writes text here after submit. -->
+            <p class="form__status" id="formStatus" role="status" aria-live="polite"></p>
+          </form>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ============================================================
+       7) FOOTER
+       ============================================================ -->
+  <footer class="footer">
+    <div class="container footer__inner">
+      <p class="footer__copy">
+        <!-- EDIT: your name and year. Year is auto-updated by script.js. -->
+        &copy; <span id="year">2026</span> Abin Kuriakose. All rights reserved.
+      </p>
+
+      <ul class="footer__links">
+        <li><a href="https://github.com/yourhandle" target="_blank" rel="noopener">GitHub</a></li>
+        <li><a href="https://linkedin.com/in/yourhandle" target="_blank" rel="noopener">LinkedIn</a></li>
+        <li><a href="mailto:your@email.com">Email</a></li>
+      </ul>
+
+      <a href="#hero" class="footer__top">
+        Back to top <span aria-hidden="true">&uarr;</span>
+      </a>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

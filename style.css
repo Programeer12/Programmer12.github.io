@@ -1,0 +1,1646 @@
+/* ============================================================================
+   PORTFOLIO STYLESHEET
+   ----------------------------------------------------------------------------
+   Table of contents
+     01. Design tokens (colors, spacing, type)
+     02. Reset & base
+     03. Layout helpers (container, grid)
+     04. Background decor
+     05. Buttons, tags, badges
+     06. Navbar (+ mobile drawer)
+     07. Hero
+     08. Section shell (headings)
+     09. About
+     10. Projects (cards)
+     11. Skills (groups + progress meters)
+     12. Contact (links + form)
+     13. Footer
+     14. Scroll-reveal animation states
+     15. Responsive breakpoints
+     16. Accessibility (reduced motion, focus, print)
+   ========================================================================= */
+
+/* ============================================================================
+   01. DESIGN TOKENS
+   Change the neon palette here and the whole site follows.
+   ========================================================================= */
+:root {
+  /* Base surfaces — deep navy-blacks, cool toned */
+  --bg:            #06080f;
+  --bg-alt:        #0a0e1a;
+  --surface:       #0e1322;
+  --surface-2:     #131a2c;
+  --border:        #1e2740;
+  --border-bright: #2b3a5c;
+
+  /* Text */
+  --text:          #e6edf7;
+  --text-muted:    #8f9bb3;
+  --text-dim:      #616d84;
+
+  /* Neon accents — cool toned: cyan / blue / green */
+  --accent:        #22d3ee;   /* cyan    — primary */
+  --accent-blue:   #3b82f6;   /* blue    — secondary */
+  --accent-green:  #34d399;   /* green   — success */
+  --accent-soft:   rgba(34, 211, 238, 0.12);
+
+  /* Neon glows */
+  --glow-accent:   0 0 22px rgba(34, 211, 238, 0.35);
+  --glow-green:    0 0 22px rgba(52, 211, 153, 0.32);
+
+  /* Typography */
+  --font-sans: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-mono: "JetBrains Mono", "Fira Code", ui-monospace, "Cascadia Code", Consolas, monospace;
+
+  /* Spacing scale */
+  --nav-h: 68px;
+  --gutter: 24px;
+  --section-y: 108px;
+
+  /* Radius + transition */
+  --radius: 14px;
+  --radius-sm: 9px;
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --speed: 0.32s;
+
+  /* ==========================================================================
+     FX CONTROL PANEL  ← tweak these to retune the whole animation system
+     --------------------------------------------------------------------------
+     Everything time-based or intensity-based is a token, so you never have to
+     hunt through the keyframes. Rules of thumb:
+       • lower the time  = faster / more urgent
+       • lower the px     = subtler / less movement
+       • raise the alpha  = more visible glow
+     ========================================================================== */
+
+  /* -- Background grid ------------------------------------------------- */
+  --fx-grid-size: 56px;        /* px between grid lines (bigger = coarser) */
+  --fx-grid-alpha: 0.05;      /* grid line opacity. Max ~0.12 before it's noisy */
+
+  /* -- Scanline sweep -------------------------------------------------- */
+  --fx-scan-speed: 9s;         /* seconds for one top-to-bottom pass. Try 14s calm / 5s busy */
+  --fx-scan-alpha: 0.55;       /* overall strength of the sweeping band (0 = hidden) */
+  --fx-scan-band: 260px;       /* height of the bright band in px. Bigger = wider sweep */
+  --fx-scan-lines: 0.32;       /* opacity of the static CRT horizontal-line texture */
+
+  /* -- Hero name glow pulse -------------------------------------------- */
+  --fx-pulse-speed: 3.2s;      /* seconds per full glow cycle */
+  --fx-pulse-min: 0.3;         /* glow strength at the dim point */
+  --fx-pulse-max: 0.8;         /* glow strength at the bright point */
+
+  /* -- Blinking cursors (subtitle + terminal) -------------------------- */
+  --fx-blink-speed: 1.05s;     /* seconds per on/off. Keep near 1s to read as typing */
+
+  /* -- Availability dot ------------------------------------------------ */
+  --fx-dot-speed: 2s;          /* pulse + expanding-ring cycle */
+
+  /* -- Terminal idle float --------------------------------------------- */
+  --fx-float-speed: 6.5s;      /* seconds per up/down cycle */
+  --fx-float-distance: 10px;   /* how far it bobs. 0 = perfectly still */
+  --fx-terminal-glow: 0.3;     /* extra glow alpha while hovering the terminal */
+
+  /* -- Terminal boot "typing" ------------------------------------------ */
+  --fx-type-stagger: 130ms;    /* delay added per line. 0 = all at once */
+  --fx-type-duration: 340ms;    /* how long one line takes to fade in */
+
+  /* -- Scroll reveal --------------------------------------------------- */
+  --reveal-distance: 30px;     /* how far up an element travels as it fades in */
+  --reveal-step: 90ms;         /* stagger between consecutive --i indexes */
+
+  /* -- Buttons --------------------------------------------------------- */
+  --fx-btn-pulse-speed: 1.6s;  /* "View My Projects" glow pulse while hovered */
+  --fx-btn-scale: 1.045;       /* hover scale-up amount. 1.02 = subtle, 1.1 = chunky */
+
+  /* -- Scroll reveal on the terminal's inner block ---------------------- */
+  --reveal-inner-y: 18px;      /* travel distance for the nested fade-in wrapper */
+}
+
+/* ============================================================================
+   02. RESET & BASE
+   ========================================================================= */
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+* { margin: 0; }
+
+html {
+  scroll-behavior: smooth;          /* CSS smooth scroll fallback */
+  scroll-padding-top: var(--nav-h);  /* stops anchors hiding under the fixed navbar */
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;               /* guards against decorative glow overflow */
+}
+
+img, svg, video { display: block; max-width: 100%; height: auto; }
+
+a { color: inherit; text-decoration: none; }
+
+button, input, textarea {
+  font: inherit;
+  color: inherit;
+}
+
+button { background: none; border: 0; cursor: pointer; }
+
+h1, h2, h3, h4 {
+  line-height: 1.18;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+strong { font-weight: 600; color: #fff; }
+
+/* Consistent neon focus ring for keyboard users */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* Reusable accent highlight inside headings */
+.accent {
+  color: var(--accent);
+  text-shadow: 0 0 26px rgba(34, 211, 238, 0.4);
+}
+
+/* Muted inline note inside paragraphs */
+.muted { color: var(--text-dim); }
+
+/* Keyboard users skip the whole nav */
+.skip-link {
+  position: absolute;
+  top: -60px;
+  left: 16px;
+  z-index: 200;
+  padding: 10px 16px;
+  background: var(--accent);
+  color: #04070d;
+  font-weight: 600;
+  border-radius: var(--radius-sm);
+  transition: top var(--speed) var(--ease);
+}
+.skip-link:focus { top: 14px; }
+
+/* ============================================================================
+   03. LAYOUT HELPERS
+   ========================================================================= */
+.container {
+  width: min(1180px, 100%);
+  margin-inline: auto;   /* centers horizontally */
+  padding-inline: var(--gutter);
+}
+
+/* Auto-responsive grid: uses minmax so no media query is needed.
+   Add --min to control the smallest column. */
+.grid { display: grid; gap: 26px; }
+.grid--cards { grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--min, 290px)), 1fr)); }
+
+/* ============================================================================
+   04. BACKGROUND DECOR
+   ----------------------------------------------------------------------------
+   Requirement 1 — the grid and the scanline are pseudo-elements on <body>,
+   so they need no markup at all. That constrains us to exactly one level of
+   pseudo: you cannot put ::before/::after ON a pseudo-element. So the split is:
+
+     body::before -> static layers: blueprint grid + CRT line texture.
+                     Transformed by the parallax script via --parallax-x/y.
+     body::after  -> the single travelling scanline band.
+
+   .bg-glow (a real div, see index.html) keeps the soft bloom and its own
+   drift loop, since it needs an element to hang the animation off.
+
+   Everything is positioned with `fixed`, so these paint behind all content
+   regardless of where they appear in the body. Nothing here animates a
+   layout property — grid and texture never move at all, and the scanline
+   only ever touches transform.
+   ========================================================================= */
+
+/* --- Grid + CRT texture ---------------------------------------------------- */
+body::before {
+  content: "";
+  position: fixed;
+  inset: -60px;              /* overhang hides any edge the parallax reveals */
+  z-index: -3;
+  pointer-events: none;
+
+  /* Three stacked layers, painted back to front:
+       1 + 2. the grid — one horizontal rule set, one vertical rule set
+       3.     the CRT texture, which must NOT travel with the scanline, so it
+               lives here on the static layer rather than on body::after */
+  background-image:
+    repeating-linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, var(--fx-scan-lines)) 0px,
+      rgba(0, 0, 0, var(--fx-scan-lines)) 1px,
+      transparent 1px,
+      transparent 3px
+    ),
+    linear-gradient(rgba(34, 211, 238, var(--fx-grid-alpha)) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(34, 211, 238, var(--fx-grid-alpha)) 1px, transparent 1px);
+
+  background-size:
+    auto,
+    var(--fx-grid-size) var(--fx-grid-size),
+    var(--fx-grid-size) var(--fx-grid-size);
+
+  /* Concentrates both layers near the top so they read as depth rather than
+     as wallpaper competing with your text */
+  mask-image: radial-gradient(ellipse 85% 65% at 50% 0%, #000 30%, transparent 88%);
+  -webkit-mask-image: radial-gradient(ellipse 85% 65% at 50% 0%, #000 30%, transparent 88%);
+
+  /* The parallax script writes these two custom properties; the pixel values
+     and the intensity both live in CONFIG.parallax in script.js. Using custom
+     properties is what lets us drive a pseudo-element from JS at all. */
+  transform: translate3d(
+    calc(var(--parallax-x, 0) * 1px),
+    calc(var(--parallax-y, 0) * 1px),
+    0
+  );
+  will-change: transform;
+}
+
+/* --- Travelling scanline ---------------------------------------------------
+   One element, so one gradient, so one animation. Speed and band height are
+   the --fx-scan-* tokens in the FX CONTROL PANEL above.
+   -------------------------------------------------------------------------- */
+body::after {
+  content: "";
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: var(--fx-scan-band);
+  z-index: -1;
+  pointer-events: none;
+  opacity: var(--fx-scan-alpha);
+
+  /* A soft band with a faint green shift at its trailing edge — reads like
+     a refresh line rather than a hard stripe. */
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(34, 211, 238, 0.05) 42%,
+    rgba(52, 211, 153, 0.06) 52%,
+    transparent 100%
+  );
+
+  will-change: transform;
+  animation: scan var(--fx-scan-speed) linear infinite;
+}
+
+@keyframes scan {
+  from { transform: translate3d(0, calc(var(--fx-scan-band) * -1), 0); }
+  to   { transform: translate3d(0, 100vh, 0); }
+}
+
+.bg-glow {
+  position: fixed;
+  z-index: -2;
+  width: 620px;
+  height: 620px;
+  top: -220px;
+  right: -160px;
+  border-radius: 50%;
+  pointer-events: none;
+  filter: blur(120px);
+  opacity: 0.5;
+  background: radial-gradient(circle, rgba(34, 211, 238, 0.35), transparent 68%);
+  animation: drift 16s ease-in-out infinite alternate;
+}
+
+@keyframes drift {
+  to { transform: translate3d(-70px, 70px, 0) scale(1.12); }
+}
+
+/* ============================================================================
+   05. BUTTONS, TAGS, BADGES
+   ========================================================================= */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  padding: 13px 26px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  font-size: 0.94rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  transition: transform var(--speed) var(--ease),
+              box-shadow var(--speed) var(--ease),
+              background-color var(--speed) var(--ease),
+              background-size var(--speed) var(--ease),
+              border-color var(--speed) var(--ease),
+              color var(--speed) var(--ease);
+}
+
+/* --- "View My Projects" ---------------------------------------------------
+   On hover: scales up, lifts, and runs a breathing glow loop.
+   The loop only animates box-shadow, which does cost a repaint — but it only
+   runs while the pointer is over a ~200x46px element, so it's not worth the
+   complexity of faking it with an extra blurred pseudo-element.
+   -------------------------------------------------------------------------- */
+.btn--primary {
+  background: linear-gradient(135deg, var(--accent), var(--accent-blue));
+  color: #04070d;
+  box-shadow: 0 6px 24px rgba(34, 211, 238, 0.22);
+}
+.btn--primary:hover,
+.btn--primary:focus-visible {
+  transform: translateY(-3px) scale(var(--fx-btn-scale));
+  animation: btn-pulse var(--fx-btn-pulse-speed) ease-in-out infinite;
+}
+.btn--primary:active { transform: translateY(-1px) scale(1.01); }
+
+@keyframes btn-pulse {
+  0%, 100% { box-shadow: 0 8px 26px rgba(34, 211, 238, 0.30), 0 0 0 0 rgba(34, 211, 238, 0.40); }
+  50%      { box-shadow: 0 12px 34px rgba(34, 211, 238, 0.45), 0 0 26px 6px rgba(34, 211, 238, 0); }
+}
+
+/* --- "Get in Touch" -------------------------------------------------------
+   A gradient wipes in from the left on hover instead of a flat colour swap.
+   Trick: keep the gradient as a background-image with background-size at 0%
+   and animate background-size to 100%. Animating background-size is cheaper
+   than swapping background-color, and you get a directional fill for free.
+   -------------------------------------------------------------------------- */
+.btn--ghost {
+  background-color: transparent;
+  background-image: linear-gradient(135deg, var(--accent), var(--accent-blue));
+  background-repeat: no-repeat;
+  background-position: left center;
+  background-size: 0% 100%;
+  border-color: var(--border-bright);
+  color: var(--text);
+}
+.btn--ghost:hover,
+.btn--ghost:focus-visible {
+  transform: translateY(-3px) scale(1.02);
+  background-size: 100% 100%;   /* wipes the gradient in from the left edge */
+  border-color: var(--accent);
+  color: #04070d;               /* flip to dark text once the bright fill lands */
+  box-shadow: 0 8px 24px rgba(34, 211, 238, 0.24);
+}
+
+.btn--full { width: 100%; justify-content: center; }
+
+.btn__icon { transition: transform var(--speed) var(--ease); }
+.btn:hover .btn__icon { transform: translateX(4px); }
+
+/* Tech tag pill */
+.tags {
+  display: flex;
+  flex-wrap: wrap;      /* wraps on narrow screens */
+  gap: 8px;
+  list-style: none;
+  padding: 0;
+}
+.tags li {
+  padding: 5px 12px;
+  border: 1px solid var(--border-bright);
+  border-radius: 999px;
+  background: rgba(20, 27, 45, 0.7);
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  letter-spacing: 0.02em;
+  transition: color var(--speed) var(--ease),
+              border-color var(--speed) var(--ease),
+              box-shadow var(--speed) var(--ease);
+}
+.tags li:hover {
+  color: var(--accent);
+  border-color: rgba(34, 211, 238, 0.45);
+  box-shadow: 0 0 14px rgba(34, 211, 238, 0.14);
+}
+
+/* Small status badge on project cards */
+.badge {
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.badge--live {
+  background: rgba(52, 211, 153, 0.12);
+  color: var(--accent-green);
+  border: 1px solid rgba(52, 211, 153, 0.3);
+}
+
+/* ============================================================================
+   06. NAVBAR
+   ========================================================================= */
+.navbar {
+  position: fixed;
+  inset: 0 0 auto;         /* spans full width, sticks to top */
+  z-index: 100;
+  height: var(--nav-h);
+  display: flex;
+  align-items: center;
+  background: rgba(6, 8, 15, 0.7);
+  border-bottom: 1px solid transparent;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  transition: background var(--speed) var(--ease),
+              border-color var(--speed) var(--ease),
+              box-shadow var(--speed) var(--ease);
+}
+/* .is-scrolled is toggled by script.js once you scroll past ~40px.
+   Darker surface + a cyan hairline along the bottom edge. */
+.navbar.is-scrolled {
+  background: rgba(3, 5, 10, 0.97);
+  border-bottom-color: rgba(34, 211, 238, 0.28);
+  box-shadow:
+    0 10px 34px rgba(0, 0, 0, 0.65),
+    0 1px 0 0 rgba(34, 211, 238, 0.35),      /* the bright bottom hairline */
+    0 16px 44px -16px rgba(34, 211, 238, 0.35); /* soft glow spilling downward */
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.nav__brand {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  flex-shrink: 0;
+}
+.nav__brand-mark {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: var(--accent);
+  padding: 6px 10px;
+  border: 1px solid rgba(34, 211, 238, 0.35);
+  border-radius: var(--radius-sm);
+  background: var(--accent-soft);
+  box-shadow: var(--glow-accent);
+}
+.nav__brand-text {
+  display: flex;
+  flex-direction: column;
+  font-weight: 600;
+  font-size: 1.02rem;
+  letter-spacing: -0.01em;
+  line-height: 1.15;
+}
+.nav__brand-sub {
+  font-family: var(--font-mono);
+  font-size: 0.63rem;
+  font-weight: 400;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+.nav__menu {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  list-style: none;
+  padding: 0;
+}
+.nav__link {
+  position: relative;
+  display: block;
+  padding: 8px 15px;
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+  font-size: 0.92rem;
+  font-weight: 500;
+  transition: color var(--speed) var(--ease),
+              background-color var(--speed) var(--ease);
+}
+.nav__link:hover {
+  color: var(--accent);
+  background: rgba(34, 211, 238, 0.06);
+}
+
+/* Sliding underline indicator.
+   Starts collapsed (scaleX(0)) and expands to scaleX(1) on BOTH :hover and
+   .is-active (the section you're currently viewing, set by the scrollspy in
+   script.js). transform-origin is left, so it wipes in from the left. */
+.nav__link::after {
+  content: "";
+  position: absolute;
+  left: 15px;
+  right: 15px;
+  bottom: 2px;
+  height: 2px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--accent), var(--accent-blue));
+  box-shadow: var(--glow-accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--speed) var(--ease);
+}
+.nav__link:hover::after,
+.nav__link:focus-visible::after,
+.nav__link.is-active::after { transform: scaleX(1); }
+
+.nav__link.is-active { color: var(--accent); }
+
+/* --- Hamburger (hidden on desktop) --- */
+.nav__toggle {
+  display: none;
+  width: 44px;
+  height: 40px;
+  padding: 9px 10px;
+  border: 1px solid var(--border-bright);
+  border-radius: var(--radius-sm);
+  background: rgba(20, 27, 45, 0.6);
+  flex-direction: column;
+  justify-content: space-between;
+}
+.nav__toggle span {
+  display: block;
+  height: 2px;
+  width: 100%;
+  border-radius: 2px;
+  background: var(--text);
+  transition: transform var(--speed) var(--ease),
+              opacity var(--speed) var(--ease);
+}
+/* X animation when the drawer is open */
+.nav__toggle[aria-expanded="true"] span:nth-child(1) { transform: translateY(9px) rotate(45deg); }
+.nav__toggle[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+.nav__toggle[aria-expanded="true"] span:nth-child(3) { transform: translateY(-9px) rotate(-45deg); }
+
+/* ============================================================================
+   07. HERO
+   ========================================================================= */
+.hero {
+  min-height: 100vh;                 /* fill the first screen */
+  display: grid;
+  grid-template-columns: 1.15fr 1fr;
+  align-items: center;
+  gap: 56px;
+  /* top padding clears the fixed navbar, bottom gives breathing room */
+  padding: calc(var(--nav-h) + 72px) 0 88px;
+}
+
+.hero__inner { max-width: 660px; }
+
+.hero__status {
+  position: relative;              /* anchors the expanding dot ring */
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  margin-bottom: 26px;
+  padding: 6px 15px 6px 11px;
+  border: 1px solid rgba(52, 211, 153, 0.28);
+  border-radius: 999px;
+  background: rgba(52, 211, 153, 0.08);
+  color: var(--accent-green);
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+}
+
+/* --- Availability dot: core pulse + expanding sonar ring -------------------
+   .dot itself scales/fades; the ::after ring grows outward and dies.
+   Two separate effects on two separate elements keeps them in sync on the
+   same --fx-dot-speed without fighting over one property.
+   -------------------------------------------------------------------------- */
+.dot {
+  position: relative;
+  width: 7px;
+  height: 7px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: var(--accent-green);
+  box-shadow: 0 0 10px var(--accent-green);
+  animation: dot-core var(--fx-dot-speed) ease-in-out infinite;
+}
+.dot::after {
+  content: "";
+  position: absolute;
+  inset: -3px;
+  border: 1px solid var(--accent-green);
+  border-radius: 50%;
+  animation: dot-ring var(--fx-dot-speed) ease-out infinite;
+}
+
+@keyframes dot-core {
+  0%, 100% { opacity: 1;   transform: scale(1); }
+  50%      { opacity: 0.4; transform: scale(0.78); }
+}
+@keyframes dot-ring {
+  0%   { transform: scale(0.5); opacity: 0.9; }
+  100% { transform: scale(2.4); opacity: 0; }
+}
+
+.hero__title {
+  font-size: clamp(2.5rem, 6.2vw, 4.1rem);
+  margin-bottom: 14px;
+}
+
+/* Cyan glow that breathes on the visitor's name.
+   Animating text-shadow is a repaint, but it's one word on screen and it
+   genuinely sells the "neon" look. Drop the .glow-pulse class from the
+   <span> in index.html to switch it off. */
+.glow-pulse {
+  animation: name-glow var(--fx-pulse-speed) ease-in-out infinite;
+}
+@keyframes name-glow {
+  0%, 100% { text-shadow: 0 0 18px rgba(34, 211, 238, var(--fx-pulse-min)); }
+  50%      { text-shadow: 0 0 34px rgba(34, 211, 238, var(--fx-pulse-max)),
+                          0 0 68px rgba(59, 130, 246, 0.35); }
+}
+
+.hero__subtitle {
+  font-family: var(--font-mono);
+  font-size: clamp(0.95rem, 2.4vw, 1.18rem);
+  color: var(--accent-blue);
+  letter-spacing: 0.02em;
+  margin-bottom: 22px;
+}
+
+/* Blinking block cursor parked after the job title, like a live terminal.
+   width/height in em so it scales with the responsive clamp() font size. */
+.type-cursor {
+  display: inline-block;
+  width: 0.5em;
+  height: 1.05em;
+  margin-left: 0.22em;
+  vertical-align: text-bottom;
+  border-radius: 1px;
+  background: var(--accent);
+  box-shadow: var(--glow-accent);
+  animation: type-blink var(--fx-blink-speed) steps(1) infinite;
+}
+
+.hero__text {
+  color: var(--text-muted);
+  font-size: 1.03rem;
+  max-width: 56ch;
+  margin-bottom: 34px;
+}
+
+.hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-bottom: 54px;
+}
+
+.hero__stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 40px;
+  list-style: none;
+  padding: 0;
+}
+.hero__stats li { display: flex; flex-direction: column; }
+.hero__stats strong {
+  font-family: var(--font-mono);
+  font-size: 1.5rem;
+  color: var(--text);
+}
+.hero__stats span {
+  font-size: 0.78rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+/* --- Decorative terminal window -------------------------------------------
+   THREE NESTED LAYERS, each owning a different property on purpose:
+
+     .hero__visual    -> transform, written by JS (mouse parallax)
+     .reveal-inner    -> transform, fade-in-up once it enters the viewport
+     .terminal-float  -> transform, the idle up/down bob (CSS keyframes)
+     .terminal        -> box-shadow + border-color, the hover glow
+
+   If these were merged, each one would overwrite the last one's transform and
+   the effects would visibly stutter. Keep them separate.
+   ------------------------------------------------------------------------- */
+.hero__visual { min-width: 0; will-change: transform; }
+
+/* Idle bob. Infinite alternate means it drifts up then back down forever. */
+.terminal-float {
+  animation: term-float var(--fx-float-speed) ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+@keyframes term-float {
+  from { transform: translate3d(0, calc(var(--fx-float-distance) * -1), 0); }
+  to   { transform: translate3d(0, var(--fx-float-distance), 0); }
+}
+
+/* Freezing the bob on hover is what makes the intensified glow feel solid —
+   the window "locks" under the cursor instead of drifting away from it.
+   animation-play-state does NOT touch transform-by-hand, so there's no jump. */
+.terminal-float:hover,
+.terminal-float:focus-within { animation-play-state: paused; }
+
+.terminal {
+  position: relative;          /* containing block for the ::after glow wash */
+  border: 1px solid var(--border-bright);
+  border-radius: var(--radius);
+  background: rgba(10, 14, 26, 0.86);
+  box-shadow: 0 26px 60px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  overflow: hidden;
+  /* glows up on hover. box-shadow only, so no layout shift. */
+  transition: border-color var(--speed) var(--ease),
+              box-shadow var(--speed) var(--ease),
+              transform var(--speed) var(--ease);
+}
+.terminal:hover {
+  transform: translateY(-4px);
+  border-color: rgba(34, 211, 238, 0.55);
+  box-shadow:
+    0 30px 70px rgba(0, 0, 0, 0.6),
+    0 0 40px rgba(34, 211, 238, calc(var(--fx-terminal-glow) * 0.9)),
+    0 0 90px rgba(59, 130, 246, calc(var(--fx-terminal-glow) * 0.5)),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+/* A faint cyan wash that fades in on hover — sells the "powered on" look.
+   z-index 0 keeps it behind the title bar and text, which sit at z-index 1. */
+.terminal::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    120% 80% at 50% 0%,
+    rgba(34, 211, 238, 0.10),
+    transparent 70%
+  );
+  opacity: 0;
+  transition: opacity var(--speed) var(--ease);
+}
+.terminal:hover::after { opacity: 1; }
+
+.terminal__bar {
+  position: relative;          /* above the ::after wash */
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 11px 15px;
+  border-bottom: 1px solid var(--border);
+  background: rgba(19, 26, 44, 0.9);
+}
+.terminal__dot { width: 10px; height: 10px; border-radius: 50%; background: #2b3a5c; }
+.terminal__dot:first-child { background: #ef6b6b; }
+.terminal__dot:nth-child(2) { background: #f5c451; }
+.terminal__dot:nth-child(3) { background: #3ddc97; }
+.terminal__title {
+  margin-left: 9px;
+  font-family: var(--font-mono);
+  font-size: 0.73rem;
+  color: var(--text-dim);
+}
+.terminal__body {
+  position: relative;      /* stacks above the ::after wash */
+  z-index: 1;
+  margin: 0;
+  padding: 20px;
+  font-family: var(--font-mono);
+  font-size: 0.83rem;
+  line-height: 1.85;
+  color: var(--text-muted);
+  white-space: pre;               /* keep the code block formatting */
+  overflow-x: auto;
+}
+
+/* --- Boot "typing" effect -------------------------------------------------
+   Each row of terminal output is a .terminal__line span. They start hidden
+   and slide in once script.js adds .is-typed to the container; CSS reads the
+   per-line --i index to stagger them, so one class toggle animates all ten.
+   -------------------------------------------------------------------------- */
+.terminal__line {
+  display: inline-block;       /* transform needs a non-inline box */
+  vertical-align: top;
+  opacity: 0;
+  transform: translate3d(-8px, 0, 0);
+  transition: opacity var(--fx-type-duration) var(--ease),
+              transform var(--fx-type-duration) var(--ease);
+  transition-delay: calc(var(--i, 0) * var(--fx-type-stagger));
+}
+.terminal__body.is-typed .terminal__line {
+  opacity: 1;
+  transform: none;
+}
+
+/* Safety nets: if JS is disabled or the visitor asked for reduced motion,
+   the lines must still be readable. */
+html.no-js .terminal__line { opacity: 1; transform: none; }
+
+.c-prompt { color: var(--accent); }
+.c-cyan   { color: var(--accent); font-weight: 500; }
+.c-green  { color: var(--accent-green); }
+
+/* Blinking block cursor at the end of the final prompt */
+.caret {
+  display: inline-block;
+  width: 8px;
+  height: 1em;
+  vertical-align: text-bottom;
+  background: var(--accent-green);
+  box-shadow: var(--glow-green);
+  animation: blink var(--fx-blink-speed) steps(1) infinite;
+}
+@keyframes blink { 50% { opacity: 0; } }
+
+/* ============================================================================
+   08. SECTION SHELL
+   ========================================================================= */
+.section { padding-block: var(--section-y); }
+
+/* Alternate the background so sections are visually separated */
+.section:nth-of-type(even) { background: var(--bg-alt); }
+
+.section__head { margin-bottom: 52px; }
+
+.section__eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.83rem;
+  color: var(--accent);
+  letter-spacing: 0.04em;
+  margin-bottom: 10px;
+}
+
+.section__title {
+  font-size: clamp(1.85rem, 4.4vw, 2.6rem);
+  /* neon underline stroke beneath the heading */
+  position: relative;
+  padding-bottom: 16px;
+}
+.section__title::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 66px;
+  height: 3px;
+  border-radius: 3px;
+  background: linear-gradient(90deg, var(--accent), transparent);
+  box-shadow: var(--glow-accent);
+}
+
+.section__desc {
+  color: var(--text-muted);
+  max-width: 62ch;
+  margin-top: 18px;
+}
+
+/* ============================================================================
+   09. ABOUT
+   ========================================================================= */
+.about {
+  display: grid;
+  grid-template-columns: 250px 1fr;
+  gap: 44px;
+  align-items: start;
+}
+
+/* Code-styled avatar placeholder.
+   To use a photo instead, replace this whole div in the HTML with:
+   <img class="about__photo" src="profile.jpg" alt="Your Name" /> */
+.avatar {
+  display: grid;
+  place-content: center;
+  gap: 8px;
+  aspect-ratio: 1;
+  border: 1px solid var(--border-bright);
+  border-radius: var(--radius);
+  background:
+    linear-gradient(160deg, rgba(34, 211, 238, 0.1), transparent 60%),
+    var(--surface);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  text-align: center;
+}
+.avatar__prompt {
+  font-family: var(--font-mono);
+  font-size: 2.6rem;
+  font-weight: 700;
+  color: var(--accent);
+  text-shadow: var(--glow-accent);
+}
+.avatar__label {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+.about__photo { border-radius: var(--radius); border: 1px solid var(--border-bright); }
+
+.about__body { display: grid; gap: 18px; }
+.about__body p { color: var(--text-muted); max-width: 72ch; }
+
+.about__learning {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  list-style: none;
+  padding: 0;
+  margin-top: 8px;
+}
+.about__learning li {
+  padding: 6px 13px;
+  border-left: 2px solid var(--accent-green);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  background: rgba(52, 211, 153, 0.07);
+  color: var(--text-muted);
+  font-size: 0.86rem;
+}
+
+/* ============================================================================
+   10. PROJECT CARDS
+   ========================================================================= */
+.card {
+  --min: 300px;
+  position: relative;
+  display: flex;
+  flex-direction: column;      /* pushes the link to the bottom */
+  gap: 16px;
+  padding: 26px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: linear-gradient(180deg, var(--surface), var(--bg-alt));
+  overflow: hidden;
+  transition: transform var(--speed) var(--ease),
+              border-color var(--speed) var(--ease),
+              box-shadow var(--speed) var(--ease);
+}
+/* Neon top edge that lights up on hover */
+.card::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 2px;
+  background: linear-gradient(90deg, var(--accent), var(--accent-blue));
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.45s var(--ease);
+}
+.card:hover {
+  transform: translateY(-6px);
+  border-color: rgba(34, 211, 238, 0.4);
+  box-shadow: 0 22px 46px rgba(0, 0, 0, 0.5), 0 0 26px rgba(34, 211, 238, 0.1);
+}
+.card:hover::before { transform: scaleX(1); }
+
+.card__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+/* Wrapper so you can drop 2+ badges in without breaking the layout */
+.card__badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: flex-end;
+}
+.card__icon {
+  display: grid;
+  place-content: center;
+  width: 46px;
+  height: 46px;
+  border: 1px solid var(--border-bright);
+  border-radius: var(--radius-sm);
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: 1.2rem;
+  box-shadow: inset 0 0 18px rgba(34, 211, 238, 0.08);
+}
+
+.card__title { font-size: 1.22rem; }
+
+.card__desc {
+  color: var(--text-muted);
+  font-size: 0.94rem;
+  flex-grow: 1;      /* keeps links aligned across a row of uneven cards */
+}
+
+.card__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: auto;
+  color: var(--accent);
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: gap var(--speed) var(--ease), color var(--speed) var(--ease);
+}
+.card__link:hover { gap: 12px; color: var(--accent-green); }
+.card__link--disabled { color: var(--text-dim); cursor: default; }
+.card__link--disabled:hover { gap: 7px; color: var(--text-dim); }
+
+/* ============================================================================
+   11. SKILLS
+   ========================================================================= */
+.skills {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 270px), 1fr));
+  gap: 26px;
+  margin-bottom: 52px;
+}
+.skills__group {
+  padding: 24px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  transition: border-color var(--speed) var(--ease);
+}
+.skills__group:hover { border-color: var(--border-bright); }
+.skills__group-title {
+  margin-bottom: 16px;
+  padding-bottom: 11px;
+  border-bottom: 1px solid var(--border);
+  font-family: var(--font-mono);
+  font-size: 0.87rem;
+  font-weight: 500;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--accent-blue);
+}
+
+/* --- Progress meters --- */
+.meters {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr));
+  gap: 26px 44px;
+}
+.meter { list-style: none; padding: 0; }
+
+.meter__row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 14px;
+  margin-bottom: 9px;
+}
+.meter__label { font-size: 0.91rem; font-weight: 500; }
+.meter__value {
+  font-family: var(--font-mono);
+  font-size: 0.79rem;
+  color: var(--accent);
+}
+
+.meter__track {
+  height: 7px;
+  border-radius: 999px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+.meter__fill {
+  display: block;
+  width: var(--val, 0%);
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--accent-blue), var(--accent), var(--accent-green));
+  box-shadow: var(--glow-accent);
+}
+
+/* ============================================================================
+   12. CONTACT
+   ========================================================================= */
+.contact {
+  display: grid;
+  grid-template-columns: 1fr 1.25fr;
+  gap: 46px;
+  align-items: start;
+}
+
+.contact__links { display: grid; gap: 14px; }
+
+.social {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 17px 20px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  transition: transform var(--speed) var(--ease),
+              border-color var(--speed) var(--ease),
+              background-color var(--speed) var(--ease);
+}
+.social:hover {
+  transform: translateX(5px);
+  border-color: rgba(34, 211, 238, 0.45);
+  background: var(--surface-2);
+}
+.social__icon {
+  display: grid;
+  place-content: center;
+  width: 42px;
+  height: 42px;
+  flex-shrink: 0;
+  border-radius: var(--radius-sm);
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-family: var(--font-mono);
+  font-weight: 700;
+}
+.social__body { display: flex; flex-direction: column; min-width: 0; }
+.social__body strong { font-size: 0.95rem; }
+.social__body small {
+  color: var(--text-dim);
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* --- Form --- */
+.form {
+  display: grid;
+  gap: 17px;
+  padding: 28px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.form__trap {                     /* honeypot — keep it hidden but submitted */
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+.form__row { display: grid; gap: 8px; }
+
+.form__label {
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+.form__input {
+  width: 100%;
+  padding: 12px 15px;
+  border: 1px solid var(--border-bright);
+  border-radius: var(--radius-sm);
+  background: var(--bg-alt);
+  color: var(--text);
+  font-size: 0.94rem;
+  transition: border-color var(--speed) var(--ease),
+              box-shadow var(--speed) var(--ease);
+}
+.form__input::placeholder { color: #4c566b; }
+.form__input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.14);
+}
+.form__input--area { resize: vertical; min-height: 118px; }
+
+/* Error state, toggled by script.js adding .is-invalid to the input */
+.form__input.is-invalid { border-color: #f87171; }
+.form__input.is-invalid:focus { box-shadow: 0 0 0 3px rgba(248, 113, 113, 0.14); }
+
+.form__error {
+  min-height: 1em;
+  color: #f87171;
+  font-size: 0.79rem;
+}
+
+.form__status {
+  min-height: 1.2em;
+  font-family: var(--font-mono);
+  font-size: 0.83rem;
+  color: var(--text-muted);
+}
+.form__status.is-success { color: var(--accent-green); }
+.form__status.is-error   { color: #f87171; }
+
+/* ============================================================================
+   13. FOOTER
+   ========================================================================= */
+.footer {
+  border-top: 1px solid var(--border);
+  background: #04060c;
+  padding-block: 32px;
+}
+.footer__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.footer__copy { color: var(--text-dim); font-size: 0.87rem; }
+
+.footer__links {
+  display: flex;
+  gap: 22px;
+  list-style: none;
+  padding: 0;
+}
+.footer__links a {
+  color: var(--text-muted);
+  font-size: 0.87rem;
+  transition: color var(--speed) var(--ease);
+}
+.footer__links a:hover { color: var(--accent); }
+
+.footer__top {
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  transition: color var(--speed) var(--ease);
+}
+.footer__top:hover { color: var(--accent); }
+
+/* ============================================================================
+   14. SCROLL-REVEAL STATES
+   ----------------------------------------------------------------------------
+   HOW IT WORKS
+     1. HTML puts class="reveal" on the element (and optionally --i: n for
+        a stagger position).
+     2. CSS parks it invisible and nudged down, using opacity + transform.
+     3. script.js's IntersectionObserver watches for it and adds .active
+        the moment it crosses into the viewport, then stops watching it.
+
+   Retune globally with --reveal-distance / --reveal-step at the top of this
+   file. Only opacity and transform are touched, so this never reflows.
+   ========================================================================= */
+.reveal {
+  opacity: 0;
+  transform: translate3d(0, var(--reveal-distance), 0);
+  transition: opacity 0.65s var(--ease), transform 0.65s var(--ease);
+  /* Stagger: each --i step delays the animation a little longer, so a group
+     of siblings cascades in instead of all landing on the same frame. */
+  transition-delay: calc(var(--i, 0) * var(--reveal-step));
+}
+.reveal.active {
+  opacity: 1;
+  transform: none;
+}
+
+/* Nested fade-in used by the terminal. It sits inside .hero__visual (which
+   the parallax JS transforms), so it needs its own element to animate —
+   see the layer notes in the hero markup. */
+.reveal-inner {
+  opacity: 0;
+  transform: translate3d(0, var(--reveal-inner-y), 0);
+  transition: opacity 0.7s var(--ease), transform 0.7s var(--ease);
+  transition-delay: 160ms;      /* let the copy land first, then the terminal */
+}
+.reveal.active .reveal-inner {
+  opacity: 1;
+  transform: none;
+}
+
+/* Safety net: if JS never runs, don't leave content permanently invisible. */
+html.no-js .reveal,
+html.no-js .reveal-inner {
+  opacity: 1;
+  transform: none;
+}
+
+/* ============================================================================
+   15. RESPONSIVE BREAKPOINTS
+   ----------------------------------------------------------------------------
+   Desktop-first: the base rules are the desktop layout, and each block below
+   progressively removes columns and tightens spacing.
+
+     max-width: 1024px  Small laptops / landscape tablets. Still two columns,
+                        just tighter. This is the breakpoint that catches a
+                        13" MacBook or an iPad in landscape.
+     max-width: 768px   Tablets portrait + large phones. Hero stacks to one
+                        column, hamburger drawer takes over, touch targets
+                        grow to 44px, ambient FX get damped.
+     max-width: 480px   Phones. Type scales down, padding tightens, the
+                        terminal goes full-bleed and scrolls horizontally.
+
+   NOTE: this must stay in sync with CONFIG.parallax.disableBelowWidth in
+   script.js (currently 768) — that JS gate is what actually switches the
+   mouse parallax off, and a mismatch means the effect keeps running on a
+   layout that can no longer accommodate it.
+   ========================================================================= */
+
+/* --- <= 1024px : laptops & landscape tablets ------------------------------
+   Everything still fits side by side, so we keep two columns and only reduce
+   the gaps, gutters and type so nothing feels cramped. ------------------------ */
+@media (max-width: 1024px) {
+  :root {
+    --gutter: 22px;
+    --section-y: 96px;
+  }
+
+  /* Narrower gap between the copy column and the terminal */
+  .hero { gap: 40px; }
+
+  /* 1.15fr / 1fr becomes 1fr / 0.9fr so the terminal gets a little more room
+     while the text column still holds a comfortable measure */
+  .hero { grid-template-columns: 1fr 0.9fr; }
+
+  .about { grid-template-columns: 210px 1fr; gap: 34px; }
+  .contact { gap: 34px; }
+  .meters { gap: 26px 34px; }
+}
+
+/* --- <= 768px : tablets & large phones -------------------------------------
+   The real structural breakpoint. Hero goes single-column and stacks. ------ */
+@media (max-width: 768px) {
+  :root {
+    --gutter: 20px;
+    --section-y: 80px;
+  }
+
+  /* --- HERO: two columns -> one stacked column --- */
+  .hero {
+    grid-template-columns: 1fr;     /* single column */
+    min-height: auto;               /* stop forcing a full 100vh, it pushed
+                                       a lot of dead space under the terminal */
+    gap: 44px;
+    text-align: center;
+    padding-top: calc(var(--nav-h) + 48px);
+    padding-bottom: 64px;
+  }
+  .hero__inner { margin-inline: auto; max-width: 560px; }
+  .hero__text { margin-inline: auto; }
+
+  /* Centre the rows that used to be left-aligned */
+  .hero__actions,
+  .hero__stats { justify-content: center; }
+
+  /* CTA buttons go full-width so they're easy to hit and easier to read */
+  .hero__actions .btn { flex: 1 1 100%; }
+
+  /* --- TERMINAL: full width, never wider than the viewport ---
+     min-width:0 on the grid/flex item stops the intrinsic width of the
+     white-space:pre text from forcing the whole column wider than the screen
+     (the classic flex/grid overflow bug). overflow-x:auto then gives it a
+     horizontal scrollbar instead of an overflowing page. */
+  .hero__visual {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+  }
+  .terminal-float,
+  .reveal-inner { width: 100%; max-width: 100%; }
+  .terminal { width: 100%; max-width: 100%; }
+  .terminal__body {
+    max-width: 100%;
+    overflow-x: auto;          /* scroll the code instead of blowing out layout */
+    -webkit-overflow-scrolling: touch;   /* momentum scroll on iOS Safari */
+    overscroll-behavior-x: contain;     /* stops sideways swipe chaining to the page */
+  }
+
+  /* --- NAVIGATION: hamburger drawer --- */
+  .nav__toggle { display: flex; }
+
+  .nav__menu {
+    position: fixed;
+    inset: var(--nav-h) 0 auto;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 2px;
+    padding: 18px var(--gutter) 26px;
+    background: rgba(6, 8, 15, 0.97);
+    border-bottom: 1px solid var(--border);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    /* hidden by default; .is-open slides it in */
+    transform: translateY(-14px);
+    opacity: 0;
+    visibility: hidden;
+    transition: transform var(--speed) var(--ease),
+                opacity var(--speed) var(--ease),
+                visibility var(--speed) var(--ease);
+  }
+  .nav__menu.is-open {
+    transform: translateY(0);
+    opacity: 1;
+    visibility: visible;
+  }
+
+  /* --- TOUCH TARGETS: 44px minimum on everything tappable ---
+     44px is the Apple/Google accessibility floor (WCAG 2.5.5 AAA, and what
+     both platforms' own UI guidelines use). padding + min-height together
+     mean the target stays 44px even if the label wraps. */
+  .nav__toggle { width: 44px; height: 44px; }
+
+  .nav__link {
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 12px 15px;
+    font-size: 1rem;
+  }
+  /* A short fixed underline reads better on a stacked drawer than a
+     full-width rule, so we pin its width instead of using left+right */
+  .nav__link::after { left: 15px; right: auto; width: 26px; }
+
+  .btn { min-height: 44px; padding: 13px 24px; }
+
+  .card__link {
+    align-items: center;
+    min-height: 44px;
+    /* Visual offset so the 44px box doesn't look like stray whitespace
+       around a short label */
+    margin-top: 4px;
+  }
+
+  .footer__links a,
+  .footer__top {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+
+  .social { min-height: 60px; }
+  .form__input { min-height: 46px; }
+  .form__input--area { min-height: 118px; }
+
+  /* --- Other two-column layouts collapse --- */
+  .about,
+  .contact { grid-template-columns: 1fr; }
+
+  .about__aside { display: flex; justify-content: center; }
+  .avatar { width: 180px; }
+
+  .contact__links { max-width: 520px; margin-inline: auto; }
+  .contact { max-width: 560px; margin-inline: auto; }
+
+  /* --- DAMP THE AMBIENT FX ---
+     Continuous full-screen animation is the most expensive thing on a phone,
+     so we damp rather than delete it: still present, much quieter. Parallax is
+     already off here via the JS gate. */
+  :root {
+    /* Grid gets tighter and fainter */
+    --fx-grid-size: 48px;
+    --fx-grid-alpha: 0.045;
+    /* Scanline gets slower, wider, fainter */
+    --fx-scan-speed: 14s;
+    --fx-scan-band: 200px;
+    --fx-scan-alpha: 0.45;
+    --fx-scan-lines: 0.24;
+    /* Shorter, gentler terminal bob */
+    --fx-float-distance: 6px;
+    --fx-float-speed: 8s;
+    /* Staggered reveals feel sluggish on a phone */
+    --reveal-step: 60ms;
+  }
+
+  .bg-glow { animation: none; opacity: 0.38; }
+
+  /* Pointer-only hovers can get "stuck" mid-animation after a tap */
+  .btn--primary:hover,
+  .btn--primary:focus-visible { animation: none; transform: translateY(-2px); }
+  .btn--ghost:hover,
+  .btn--ghost:focus-visible { transform: translateY(-2px); }
+}
+
+/* --- <= 480px : phones -----------------------------------------------------
+   Final squeeze. Type comes down so long words like "Abin Kuriakose" don't
+   overflow, and spacing tightens so the page doesn't feel padded-out. ------ */
+@media (max-width: 480px) {
+  :root {
+    --gutter: 16px;
+    --section-y: 64px;
+    --nav-h: 60px;            /* a shorter bar buys back vertical space */
+  }
+
+  body { font-size: 15.5px; }
+
+  /* --- TYPOGRAPHY ---
+     These are clamp() minimums. Because the clamp floor is what applies at
+     the narrow end, lowering it here is what actually shrinks the headings on
+     a phone — the base rule's 2.5rem floor was too big for a 375px screen. */
+  .hero__title   { font-size: clamp(1.7rem, 8.4vw, 2.4rem); }
+  .section__title { font-size: clamp(1.35rem, 5.6vw, 1.7rem); }
+  .hero__subtitle { font-size: 0.95rem; }
+  .hero__text     { font-size: 0.97rem; }
+
+  .hero__stats { gap: 20px; justify-content: space-between; }
+  .hero__stats strong { font-size: 1.2rem; }
+
+  /* --- SPACING --- */
+  .card { padding: 20px; }
+  .form { padding: 18px; }
+  .skills__group { padding: 20px; }
+  .section__head { margin-bottom: 38px; }
+
+  /* --- TERMINAL: full-bleed and scrollable ---
+     font-size comes down and the long scan lines get their own scroll area.
+     max-width:100% stops it forcing the page wider than the viewport. */
+  .terminal__body {
+    font-size: 0.68rem;
+    padding: 14px;
+    max-width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .terminal__bar { padding: 10px 12px; }
+  .terminal__title { font-size: 0.68rem; }
+
+  /* --- NAVIGATION: centre the drawer items --- */
+  .nav__link { justify-content: center; text-align: center; }
+  .nav__link::after { left: 50%; right: auto; transform-origin: center; }
+  .nav__link:hover::after,
+  .nav__link:focus-visible::after,
+  .nav__link.active::after,
+  .nav__link.is-active::after { transform: scaleX(1); }
+
+  .nav__brand-sub { display: none; }
+  .nav__brand-mark { width: 40px; height: 40px; }
+
+  .footer__inner { justify-content: center; text-align: center; }
+  .footer__links { gap: 10px; flex-wrap: wrap; justify-content: center; }
+
+  .meters { grid-template-columns: 1fr; }
+  .tags li { font-size: 0.72rem; padding: 5px 10px; }
+}
+
+/* --- Hover-capable only ----------------------------------------------------
+   Guard every pointer-driven glow with @media (hover: none). On a touch
+   screen these :hover states can stick after a tap, which looks broken.
+   ------------------------------------------------------------------------- */
+@media (hover: none) {
+  .btn--primary:hover,
+  .btn--primary:focus-visible,
+  .btn--ghost:hover,
+  .btn--ghost:focus-visible {
+    animation: none;
+    transform: none;
+  }
+  .terminal:hover { transform: none; }
+  .card:hover { transform: none; }
+  .social:hover { transform: none; }
+}
+
+/* ============================================================================
+   16. ACCESSIBILITY
+   ----------------------------------------------------------------------------
+   prefers-reduced-motion is a real accessibility requirement, not a nicety.
+   The blanket rule below kills every animation and transition instantly,
+   then the follow-up rules make sure nothing is left stranded in an
+   invisible start-state as a result.
+   ========================================================================= */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    /* Delays would still hold a fading element invisible for a beat */
+    transition-delay: 0ms !important;
+  }
+
+  /* Reveal animations start at opacity 0 — force them to their end state */
+  .reveal,
+  .reveal-inner {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  /* Terminal lines likewise — they'd be stuck invisible without this */
+  .terminal__line {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  /* Hide the pure-decoration layers — they add nothing once motionless.
+     The grid is a pseudo-element now, so it can't be selected by class. */
+  body::before,
+  body::after,
+  .bg-glow { display: none !important; }
+
+  /* The terminal is real content, so just stop the bob rather than removing
+     it. `animation: none` also resets transform back to none; relying on the
+     blanket 0.01ms rule alone would park it 10px low and stay there. */
+  .terminal-float { animation: none !important; }
+}
+
+@media print {
+  .navbar, .hero__visual, .form { display: none; }
+  /* pseudo-element decor can't go in a class list, so disable it directly */
+  body::before, body::after { display: none; }
+  body { background: #fff; color: #000; }
+}
