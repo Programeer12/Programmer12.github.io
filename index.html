@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Portfolio of Abin Kuriakose — cybersecurity student and aspiring penetration tester building secure web and Flutter apps." />
+  <meta name="author" content="Abin Kuriakose" />
+  <meta name="theme-color" content="#05070d" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Abin Kuriakose | Cybersecurity Student" />
+  <meta property="og:description" content="Web application security, penetration testing practice, and secure Flutter / PHP development." />
+
+  <title>Abin Kuriakose | Cybersecurity Student</title>
+
+  <!-- Inline favicon so there is no 404. Replace with your own favicon.ico if you like. -->
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2305070d'/%3E%3Ctext x='32' y='43' font-family='monospace' font-size='30' font-weight='700' text-anchor='middle' fill='%2322d3ee'%3E%26gt;_%3C/text%3E%3C/svg%3E" />
+
+  <!-- Runs before first paint: restores the saved accent colour and skips the
+       boot screen for returning visitors in the same session (no flash). -->
+  <script>
+    (function () {
+      var d = document.documentElement;
+      d.classList.remove('no-js');
+      d.classList.add('js');
+      try { var t = localStorage.getItem('portfolio-theme'); if (t) d.setAttribute('data-theme', t); } catch (e) {}
+      try { if (sessionStorage.getItem('portfolio-booted')) d.classList.add('skip-boot'); } catch (e) {}
+    })();
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <!-- ============================================================
+       BOOT SCREEN — plays once per browser session. Skippable.
+       ============================================================ -->
+  <div class="boot" id="boot" role="status" aria-live="polite">
+    <div class="boot__panel">
+      <pre class="boot__log" id="bootLog" aria-label="Loading portfolio"></pre>
+      <div class="boot__bar" aria-hidden="true"><span id="bootFill"></span></div>
+      <button class="boot__skip" id="bootSkip" type="button">Skip intro</button>
+    </div>
+  </div>
+
+  <!-- Background layers -->
+  <div class="progress" id="progress" aria-hidden="true"><span></span></div>
+  <canvas class="net" id="net" aria-hidden="true"></canvas>
+  <div class="bg-glow" aria-hidden="true"></div>
+  <div class="cursor-glow" id="cursorGlow" aria-hidden="true"></div>
+  <canvas class="matrix" id="matrix" aria-hidden="true"></canvas>
+
+  <!-- ============================================================
+       NAVBAR
+       ============================================================ -->
+  <header class="navbar" id="navbar">
+    <nav class="nav container" aria-label="Main navigation">
+      <a href="#hero" class="nav__brand">
+        <span class="nav__brand-mark">&gt;_</span>
+        <span class="nav__brand-text">
+          <span class="accent">Abin Kuriakose</span>
+          <small class="nav__brand-sub">cybersecurity</small>
+        </span>
+      </a>
+
+      <ul class="nav__menu" id="navMenu">
+        <li><a href="#about"    class="nav__link">About</a></li>
+        <li><a href="#journey"  class="nav__link">Journey</a></li>
+        <li><a href="#projects" class="nav__link">Projects</a></li>
+        <li><a href="#skills"   class="nav__link">Skills</a></li>
+        <li><a href="#terminal" class="nav__link">Terminal</a></li>
+        <li><a href="#faq"      class="nav__link">FAQ</a></li>
+        <li><a href="#contact"  class="nav__link">Contact</a></li>
+      </ul>
+
+      <div class="nav__actions">
+        <button class="nav__theme" id="themeBtn" type="button" aria-label="Change accent colour (current: cyan)" title="Change accent colour">
+          <span class="nav__theme-dot"></span>
+        </button>
+        <button class="nav__toggle" id="navToggle" type="button" aria-expanded="false" aria-controls="navMenu" aria-label="Toggle navigation menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </nav>
+  </header>
+
+  <main id="main">
+
+    <!-- ============================================================
+         HERO
+         ============================================================ -->
+    <section class="hero" id="hero">
+      <div class="container hero__inner">
+
+        <div class="hero__copy">
+          <p class="hero__status reveal" style="--i: 0">
+            <span class="dot" aria-hidden="true"></span>
+            Available for internships &amp; freelance
+          </p>
+
+          <h1 class="hero__title reveal" style="--i: 1">
+            Hi, I'm <span class="accent glow-pulse" id="heroName">Abin Kuriakose</span>
+          </h1>
+
+          <!-- Roles rotate in script.js. The real text stays readable to screen readers. -->
+          <p class="hero__subtitle reveal" style="--i: 2">
+            <span class="sr-only">Cybersecurity Student &amp; Penetration Tester</span>
+            <span id="roleText" aria-hidden="true">Cybersecurity Student &amp; Penetration Tester</span><span class="type-cursor" aria-hidden="true"></span>
+          </p>
+
+          <p class="hero__text reveal" style="--i: 3">
+            I study how systems break so I can help make them harder to break. Currently
+            focused on web application security, network reconnaissance, and building
+            secure software from the ground up.
+          </p>
+
+          <div class="hero__actions reveal" style="--i: 4">
+            <a href="#projects" class="btn btn--primary">
+              View My Projects
+              <span class="btn__icon" aria-hidden="true">&rarr;</span>
+            </a>
+            <a href="#terminal" class="btn btn--ghost">Try the terminal</a>
+            <a href="#contact" class="btn btn--ghost">Get in Touch</a>
+          </div>
+
+          <ul class="hero__stats reveal" style="--i: 5">
+            <li><strong data-count="4" data-suffix="+">4+</strong><span>Projects</span></li>
+            <li><strong>Learning</strong><span>Daily</span></li>
+            <li><strong>CTF</strong><span>Enthusiast</span></li>
+          </ul>
+        </div>
+
+        <!-- Decorative visual: terminal + simulated live feed.
+             Wrappers are nested on purpose so parallax (JS), reveal (CSS) and
+             idle float (CSS) never fight over the same `transform`. -->
+        <div class="hero__visual" aria-hidden="true">
+          <div class="reveal-inner reveal" style="--i: 2">
+            <div class="terminal-float">
+              <div class="terminal">
+                <div class="terminal__bar">
+                  <span class="terminal__dot"></span>
+                  <span class="terminal__dot"></span>
+                  <span class="terminal__dot"></span>
+                  <span class="terminal__title">visitor@portfolio:~</span>
+                </div>
+                <pre class="terminal__body"><code><span class="terminal__line"><span class="c-prompt">$</span> whoami</span>
+<span class="terminal__line"><span class="c-cyan">cybersecurity_student</span></span>
+<span class="terminal__line"></span>
+<span class="terminal__line"><span class="c-prompt">$</span> cat /etc/passions</span>
+<span class="terminal__line"><span class="c-dim">web-app-security  pentesting  secure-dev</span></span>
+<span class="terminal__line"><span class="c-prompt">$</span> nmap -sS target.local</span>
+<span class="terminal__line"><span class="c-green">  22/tcp    open  ssh</span></span>
+<span class="terminal__line"><span class="c-green">  80/tcp    open  http</span></span>
+<span class="terminal__line"><span class="c-green"> 443/tcp    open  https</span></span>
+<span class="terminal__line"></span>
+<span class="terminal__line"><span class="c-prompt">$</span> <span class="c-green">_</span><span class="caret"></span></span></code></pre>
+              </div>
+
+              <div class="feed">
+                <div class="feed__head">
+                  <span class="feed__title"><span class="feed__pulse"></span>live_feed.log</span>
+                  <span class="feed__tag">simulated</span>
+                </div>
+                <ul class="feed__list" id="feedList"></ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <a href="#about" class="scroll-cue" id="scrollCue" aria-label="Scroll down to About">
+        <span class="scroll-cue__mouse" aria-hidden="true"><span></span></span>
+        <span class="scroll-cue__text" aria-hidden="true">scroll</span>
+      </a>
+    </section>
+
+    <!-- ============================================================
+         AT A GLANCE — computed from the page itself + tech marquee
+         ============================================================ -->
+    <section class="hud" aria-label="At a glance">
+      <div class="container">
+        <ul class="hud__grid" data-stagger>
+          <li class="hud__item">
+            <span class="hud__label">Projects built</span>
+            <strong class="hud__value" id="hudProjects" data-count="4">4</strong>
+            <span class="hud__meta" id="hudProjectsMeta">mobile and web</span>
+          </li>
+          <li class="hud__item">
+            <span class="hud__label">Tools in my toolkit</span>
+            <strong class="hud__value" id="hudTools" data-count="20">20</strong>
+            <span class="hud__meta">languages, security tools, platforms</span>
+          </li>
+          <li class="hud__item">
+            <span class="hud__label">Current focus</span>
+            <strong class="hud__value hud__value--text">Web AppSec</strong>
+            <span class="hud__meta">OWASP Top 10 &amp; Burp Suite</span>
+          </li>
+          <li class="hud__item">
+            <span class="hud__label">Status</span>
+            <strong class="hud__value hud__value--text hud__value--ok"><span class="dot" aria-hidden="true"></span>Open</strong>
+            <span class="hud__meta">internships &amp; freelance</span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Marquee: items are cloned by script.js for a seamless loop -->
+      <div class="marquee" aria-hidden="true">
+        <ul class="marquee__track" id="marqueeTrack">
+          <li>Flutter</li><li>Dart</li><li>PHP</li><li>MySQL</li><li>JavaScript</li>
+          <li>OWASP Top 10</li><li>Burp Suite</li><li>Nmap</li><li>Linux</li><li>Bash</li>
+          <li>Git</li><li>Postman</li><li>Figma</li><li>Vulnerability Assessment</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         ABOUT
+         ============================================================ -->
+    <section class="section" id="about">
+      <div class="container">
+        <header class="section__head">
+          <p class="section__eyebrow">&lt; about /&gt;</p>
+          <h2 class="section__title scramble">About Me</h2>
+        </header>
+
+        <div class="about">
+          <aside class="dossier reveal reveal--left" aria-label="Quick facts">
+            <div class="dossier__bar"><span></span><span></span><span></span>dossier.json</div>
+            <dl class="dossier__list">
+              <div><dt>name</dt><dd>Abin Kuriakose</dd></div>
+              <div><dt>role</dt><dd>cybersecurity student</dd></div>
+              <div><dt>focus</dt><dd>web application security</dd></div>
+              <div><dt>builds with</dt><dd>Flutter, PHP, MySQL</dd></div>
+              <div><dt>status</dt><dd class="ok">open to internships &amp; freelance</dd></div>
+            </dl>
+          </aside>
+
+          <div class="about__body reveal reveal--right">
+            <p>
+              I'm a cybersecurity student with a hands-on interest in offensive security.
+              My path started with web development — building things in PHP, MySQL, and
+              Flutter — which gave me an insider's view of how applications are put
+              together. That turned into a curiosity about where those assumptions break.
+            </p>
+            <p>
+              Right now I'm deep into <strong>web application security</strong>, network
+              fundamentals, and Linux tooling. You'll usually find me running enumeration
+              scripts, reading through Burp Suite write-ups, or breaking my own Flutter
+              apps to see how the mobile side behaves.
+            </p>
+            <p>
+              I care about clean, documented work — whether that's a penetration testing
+              report, a PHP endpoint that doesn't allow SQL injection, or a Flutter UI that
+              handles its state properly.
+            </p>
+
+            <ul class="about__learning" data-stagger>
+              <li>OWASP Top 10</li>
+              <li>Burp Suite / Intercepting Traffic</li>
+              <li>Linux &amp; Bash Scripting</li>
+              <li>Nmap &amp; Network Recon</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         JOURNEY — a real sequence, so numbered phases make sense here.
+         EDIT the text to match your own story; add dates if you like.
+         ============================================================ -->
+    <section class="section section--alt" id="journey">
+      <div class="container">
+        <header class="section__head">
+          <p class="section__eyebrow">&lt; journey /&gt;</p>
+          <h2 class="section__title scramble">How I got here</h2>
+          <p class="section__desc">From building apps to breaking them — and fixing what I find.</p>
+        </header>
+
+        <ol class="timeline" id="timeline">
+          <li class="tl reveal reveal--left">
+            <span class="tl__dot" aria-hidden="true"></span>
+            <p class="tl__phase">Phase 1</p>
+            <h3 class="tl__title">Build</h3>
+            <p class="tl__text">
+              Started with web development: PHP and MySQL back ends, then Flutter for mobile.
+              Shipped four projects, from a furniture shop UI to an assignment platform that's live today.
+            </p>
+            <ul class="tags"><li>PHP</li><li>MySQL</li><li>Flutter</li><li>Dart</li></ul>
+          </li>
+
+          <li class="tl reveal reveal--left">
+            <span class="tl__dot" aria-hidden="true"></span>
+            <p class="tl__phase">Phase 2</p>
+            <h3 class="tl__title">Question</h3>
+            <p class="tl__text">
+              Building made me ask where my own assumptions fail. I went back to the fundamentals:
+              how networks behave, how Linux works, and what the OWASP Top 10 actually looks like in code.
+            </p>
+            <ul class="tags"><li>Linux</li><li>Bash</li><li>Networking</li><li>OWASP Top 10</li></ul>
+          </li>
+
+          <li class="tl reveal reveal--left">
+            <span class="tl__dot" aria-hidden="true"></span>
+            <p class="tl__phase">Phase 3 &middot; now</p>
+            <h3 class="tl__title">Break and fix</h3>
+            <p class="tl__text">
+              Practising on targets I own or have permission to test: intercepting traffic in Burp Suite,
+              enumerating with Nmap, and writing up what I find with a fix for each issue.
+            </p>
+            <ul class="tags"><li>Burp Suite</li><li>Nmap</li><li>Vulnerability Assessment</li><li>CTFs</li></ul>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         MINDSET — interactive "harden it" demo
+         ============================================================ -->
+    <section class="section" id="hardening">
+      <div class="container">
+        <header class="section__head">
+          <p class="section__eyebrow">&lt; mindset /&gt;</p>
+          <h2 class="section__title scramble">Build it, then break it</h2>
+          <p class="section__desc">
+            Habits I check for in every app I write. Press the button to see each one go from exposed to hardened.
+          </p>
+        </header>
+
+        <div class="harden" id="harden" data-state="exposed">
+          <div class="harden__main reveal reveal--left">
+            <div class="harden__bar">
+              <div class="harden__posture">
+                <span class="harden__posture-label">Security posture</span>
+                <strong class="harden__posture-num" id="postureNum">17%</strong>
+              </div>
+              <div class="harden__track" aria-hidden="true"><span id="postureFill"></span></div>
+              <button class="btn btn--primary harden__btn" id="hardenBtn" type="button" aria-pressed="false">
+                <span id="hardenBtnText">Harden it</span>
+              </button>
+            </div>
+
+            <ul class="harden__list" id="hardenList">
+              <li class="hitem">
+                <span class="hitem__chip">Exposed</span>
+                <span class="hitem__before">SQL built by joining strings with user input</span>
+                <span class="hitem__after">Prepared statements with bound parameters</span>
+              </li>
+              <li class="hitem">
+                <span class="hitem__chip">Exposed</span>
+                <span class="hitem__before">Input checked only in the browser</span>
+                <span class="hitem__after">Every input validated again on the server</span>
+              </li>
+              <li class="hitem">
+                <span class="hitem__chip">Exposed</span>
+                <span class="hitem__before">Passwords stored in plain text or a fast hash</span>
+                <span class="hitem__after">Salted, slow hashing with <code>password_hash()</code></span>
+              </li>
+              <li class="hitem">
+                <span class="hitem__chip">Exposed</span>
+                <span class="hitem__before">Detailed error messages shown to visitors</span>
+                <span class="hitem__after">Generic messages out front, details in logs</span>
+              </li>
+              <li class="hitem">
+                <span class="hitem__chip">Exposed</span>
+                <span class="hitem__before">Endpoints assume the caller is allowed in</span>
+                <span class="hitem__after">Authorisation checked on every request</span>
+              </li>
+              <li class="hitem">
+                <span class="hitem__chip">Exposed</span>
+                <span class="hitem__before">Secrets saved next to the code</span>
+                <span class="hitem__after">Keys kept in config outside the repository</span>
+              </li>
+            </ul>
+            <p class="sr-only" id="hardenStatus" role="status" aria-live="polite"></p>
+          </div>
+
+          <!-- Code panel swaps with the state -->
+          <div class="codepane reveal reveal--right" aria-label="Example PHP query before and after">
+            <div class="codepane__bar"><span class="codepane__file" id="codeFile">login.php &mdash; vulnerable</span></div>
+            <pre class="codepane__body codepane__body--bad"><code><span class="c-dim">// user-controlled id goes straight into SQL</span>
+<span class="c-purple">$id</span> = <span class="c-purple">$_GET</span>[<span class="c-amber">'id'</span>];
+<span class="c-purple">$sql</span> = <span class="c-amber">"SELECT * FROM users WHERE id = $id"</span>;
+<span class="c-purple">$result</span> = <span class="c-purple">$conn</span>-&gt;query(<span class="c-purple">$sql</span>);</code></pre>
+            <pre class="codepane__body codepane__body--good" hidden><code><span class="c-dim">// the query and the data travel separately</span>
+<span class="c-purple">$stmt</span> = <span class="c-purple">$pdo</span>-&gt;prepare(<span class="c-amber">'SELECT * FROM users WHERE id = :id'</span>);
+<span class="c-purple">$stmt</span>-&gt;execute([<span class="c-amber">'id'</span> =&gt; (int) <span class="c-purple">$_GET</span>[<span class="c-amber">'id'</span>]]);
+<span class="c-purple">$user</span> = <span class="c-purple">$stmt</span>-&gt;fetch();</code></pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         PROJECTS
+         ------------------------------------------------------------
+         HOW TO ADD A PROJECT:
+         1. Copy one <article class="card"> block.
+         2. Set data-type to "mobile" or "web" (drives the filter buttons).
+         3. Change the icon, title, description, tags, and link.
+         ============================================================ -->
+    <section class="section section--alt" id="projects">
+      <div class="container">
+        <header class="section__head">
+          <p class="section__eyebrow">&lt; projects /&gt;</p>
+          <h2 class="section__title scramble">Featured Projects</h2>
+          <p class="section__desc">
+            A mix of mobile apps I've shipped and a PHP platform I built end to end.
+          </p>
+        </header>
+
+        <div class="filters" role="group" aria-label="Filter projects">
+          <button class="chip is-active" type="button" data-filter="all" aria-pressed="true">All</button>
+          <button class="chip" type="button" data-filter="mobile" aria-pressed="false">Mobile</button>
+          <button class="chip" type="button" data-filter="web" aria-pressed="false">Web</button>
+        </div>
+
+        <div class="grid grid--cards" id="projectGrid">
+
+          <!-- URBAN_OAK -->
+          <article class="card reveal reveal--zoom" data-type="mobile">
+            <div class="card__face">
+              <div class="card__top">
+                <span class="card__icon" aria-hidden="true">&#9632;</span>
+                <div class="card__badges"><span class="badge badge--live">Shipped</span></div>
+              </div>
+              <h3 class="card__title">URBAN_OAK</h3>
+              <p class="card__desc">
+                A Flutter-based furniture shopping app with product browsing, cart flow,
+                and a clean material-driven UI. <span class="muted">(More details to be added later.)</span>
+              </p>
+              <ul class="tags"><li>Flutter</li><li>Dart</li></ul>
+              <!-- Replace "#" with your repo/live URL. Remove this <a> if none exists. -->
+              <a href="#" class="card__link" target="_blank" rel="noopener">
+                View project <span aria-hidden="true">&nearr;</span>
+              </a>
+            </div>
+          </article>
+
+          <!-- Hospital Ticket Booking App -->
+          <article class="card reveal reveal--zoom" style="--i: 1" data-type="mobile">
+            <div class="card__face">
+              <div class="card__top">
+                <span class="card__icon" aria-hidden="true">&#9776;</span>
+                <div class="card__badges"><span class="badge badge--live">Shipped</span></div>
+              </div>
+              <h3 class="card__title">Hospital Ticket Booking App</h3>
+              <p class="card__desc">
+                A Flutter app for booking hospital appointments — pick a department,
+                choose a slot, and manage your queue ticket. <span class="muted">(More details later.)</span>
+              </p>
+              <ul class="tags"><li>Flutter</li><li>Dart</li></ul>
+              <a href="#" class="card__link" target="_blank" rel="noopener">
+                View project <span aria-hidden="true">&nearr;</span>
+              </a>
+            </div>
+          </article>
+
+          <!-- Medify -->
+          <article class="card reveal reveal--zoom" style="--i: 2" data-type="mobile">
+            <div class="card__face">
+              <div class="card__top">
+                <span class="card__icon" aria-hidden="true">&#10048;</span>
+                <div class="card__badges"><span class="badge badge--live">Shipped</span></div>
+              </div>
+              <h3 class="card__title">Medify</h3>
+              <p class="card__desc">
+                A Flutter medicine reminder app that schedules doses and stores them
+                locally, so schedules survive offline and app restarts.
+                <span class="muted">(More details later.)</span>
+              </p>
+              <ul class="tags"><li>Flutter</li><li>Dart</li><li>Local Storage</li></ul>
+              <a href="#" class="card__link" target="_blank" rel="noopener">
+                View project <span aria-hidden="true">&nearr;</span>
+              </a>
+            </div>
+          </article>
+
+          <!-- Eddu Assign -->
+          <article class="card reveal reveal--zoom" style="--i: 3" data-type="web">
+            <div class="card__face">
+              <div class="card__top">
+                <span class="card__icon" aria-hidden="true">&#9881;</span>
+                <div class="card__badges"><span class="badge badge--live">Live</span></div>
+              </div>
+              <h3 class="card__title">Eddu Assign</h3>
+              <p class="card__desc">
+                A PHP-based assignment management and submission platform — students upload
+                work, track status, and staff review submissions, backed by a MySQL database.
+              </p>
+              <ul class="tags"><li>PHP</li><li>MySQL</li><li>Web</li></ul>
+              <a href="https://eduassign.42web.io/?i=1" class="card__link" target="_blank" rel="noopener">
+                Visit site <span aria-hidden="true">&nearr;</span>
+              </a>
+            </div>
+          </article>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         SKILLS
+         ============================================================ -->
+    <section class="section" id="skills">
+      <div class="container">
+        <header class="section__head">
+          <p class="section__eyebrow">&lt; skills /&gt;</p>
+          <h2 class="section__title scramble">Skills &amp; Toolkit</h2>
+        </header>
+
+        <div class="skills">
+          <div class="skills__group reveal reveal--zoom">
+            <h3 class="skills__group-title">Development</h3>
+            <ul class="tags">
+              <li>Flutter</li><li>Dart</li><li>PHP</li><li>MySQL</li><li>HTML</li><li>CSS</li><li>JavaScript</li>
+            </ul>
+          </div>
+
+          <div class="skills__group reveal reveal--zoom" style="--i: 1">
+            <h3 class="skills__group-title">Security</h3>
+            <ul class="tags">
+              <li>Cybersecurity Fundamentals</li><li>OWASP Top 10</li><li>Burp Suite</li><li>Network Scanning</li><li>Vulnerability Assessment</li>
+            </ul>
+          </div>
+
+          <div class="skills__group reveal reveal--zoom" style="--i: 2">
+            <h3 class="skills__group-title">Platforms &amp; Tools</h3>
+            <ul class="tags">
+              <li>Linux</li><li>Bash</li><li>Git</li><li>GitHub</li><li>Postman</li><li>Figma</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Proficiency rings. Change data-value (0-100) and the label.
+             Initial inline offset (100 - value) keeps them filled if JS is off. -->
+        <div class="gauges">
+          <figure class="gauge reveal reveal--zoom" data-value="80">
+            <svg viewBox="0 0 120 120" role="img" aria-label="Flutter and Dart, 80 percent">
+              <circle class="gauge__track" cx="60" cy="60" r="52" />
+              <circle class="gauge__fill" cx="60" cy="60" r="52" pathLength="100" transform="rotate(-90 60 60)" style="stroke-dashoffset: 20" />
+              <text class="gauge__num" x="60" y="67" text-anchor="middle">80%</text>
+            </svg>
+            <figcaption>Flutter &amp; Dart</figcaption>
+          </figure>
+
+          <figure class="gauge reveal reveal--zoom" style="--i: 1" data-value="70">
+            <svg viewBox="0 0 120 120" role="img" aria-label="PHP and MySQL, 70 percent">
+              <circle class="gauge__track" cx="60" cy="60" r="52" />
+              <circle class="gauge__fill" cx="60" cy="60" r="52" pathLength="100" transform="rotate(-90 60 60)" style="stroke-dashoffset: 30" />
+              <text class="gauge__num" x="60" y="67" text-anchor="middle">70%</text>
+            </svg>
+            <figcaption>PHP &amp; MySQL</figcaption>
+          </figure>
+
+          <figure class="gauge reveal reveal--zoom" style="--i: 2" data-value="65">
+            <svg viewBox="0 0 120 120" role="img" aria-label="Cybersecurity fundamentals, 65 percent">
+              <circle class="gauge__track" cx="60" cy="60" r="52" />
+              <circle class="gauge__fill" cx="60" cy="60" r="52" pathLength="100" transform="rotate(-90 60 60)" style="stroke-dashoffset: 35" />
+              <text class="gauge__num" x="60" y="67" text-anchor="middle">65%</text>
+            </svg>
+            <figcaption>Cybersecurity Fundamentals</figcaption>
+          </figure>
+
+          <figure class="gauge reveal reveal--zoom" style="--i: 3" data-value="60">
+            <svg viewBox="0 0 120 120" role="img" aria-label="Linux and networking, 60 percent">
+              <circle class="gauge__track" cx="60" cy="60" r="52" />
+              <circle class="gauge__fill" cx="60" cy="60" r="52" pathLength="100" transform="rotate(-90 60 60)" style="stroke-dashoffset: 40" />
+              <text class="gauge__num" x="60" y="67" text-anchor="middle">60%</text>
+            </svg>
+            <figcaption>Linux &amp; Networking</figcaption>
+          </figure>
+        </div>
+        <p class="gauges__note">Self-assessed, and updated as I learn.</p>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         INTERACTIVE TERMINAL
+         ============================================================ -->
+    <section class="section section--alt" id="terminal">
+      <div class="container">
+        <header class="section__head">
+          <p class="section__eyebrow">&lt; terminal /&gt;</p>
+          <h2 class="section__title scramble">Explore the site from a shell</h2>
+          <p class="section__desc">
+            Type a command, or tap one below. Try <code>help</code> to see everything it can do.
+          </p>
+        </header>
+
+        <div class="shell reveal reveal--zoom" id="shell">
+          <div class="shell__bar">
+            <span class="terminal__dot"></span><span class="terminal__dot"></span><span class="terminal__dot"></span>
+            <span class="terminal__title">visitor@portfolio:~</span>
+          </div>
+          <div class="shell__out" id="shellOut" role="log" aria-live="polite" tabindex="0" aria-label="Terminal output"></div>
+          <form class="shell__form" id="shellForm" autocomplete="off">
+            <label class="shell__prompt" for="shellInput">visitor@portfolio:~$</label>
+            <input class="shell__input" id="shellInput" type="text" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" />
+          </form>
+        </div>
+
+        <ul class="shell__chips" aria-label="Suggested commands">
+          <li><button type="button" class="chip" data-cmd="help">help</button></li>
+          <li><button type="button" class="chip" data-cmd="about">about</button></li>
+          <li><button type="button" class="chip" data-cmd="projects">projects</button></li>
+          <li><button type="button" class="chip" data-cmd="skills">skills</button></li>
+          <li><button type="button" class="chip" data-cmd="nmap target.local">nmap target.local</button></li>
+          <li><button type="button" class="chip" data-cmd="contact">contact</button></li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         FAQ / KNOWLEDGE BASE
+         EDIT: these answers are written from your bio — adjust them to your own voice.
+         data-cat must be security, dev, or career (matches the filter buttons).
+         ============================================================ -->
+    <section class="section" id="faq">
+      <div class="container">
+        <header class="section__head">
+          <p class="section__eyebrow">&lt; faq /&gt;</p>
+          <h2 class="section__title scramble">Questions I get asked</h2>
+        </header>
+
+        <div class="faq__tools">
+          <div class="filters" role="group" aria-label="Filter questions">
+            <button class="chip is-active" type="button" data-faq="all" aria-pressed="true">All</button>
+            <button class="chip" type="button" data-faq="security" aria-pressed="false">Security</button>
+            <button class="chip" type="button" data-faq="dev" aria-pressed="false">Development</button>
+            <button class="chip" type="button" data-faq="career" aria-pressed="false">Career</button>
+          </div>
+          <label class="faq__search">
+            <span class="sr-only">Search questions</span>
+            <input type="search" id="faqSearch" placeholder="Search, e.g. SQL injection" />
+          </label>
+        </div>
+
+        <div class="faq__list" id="faqList" data-stagger>
+          <details class="qa" name="faq" data-cat="security">
+            <summary>What is the OWASP Top 10, and why does it matter?</summary>
+            <div class="qa__body"><p>
+              It's a regularly updated list of the most critical web application security risks, such as broken access
+              control, injection, and security misconfiguration. I use it as a checklist when I review my own PHP and
+              Flutter back ends, because it turns "make it secure" into specific things I can test.
+            </p></div>
+          </details>
+
+          <details class="qa" name="faq" data-cat="security">
+            <summary>How do you prevent SQL injection in PHP?</summary>
+            <div class="qa__body"><p>
+              I never build queries by joining strings with user input. I use prepared statements with bound parameters
+              (PDO or mysqli), validate input on the server, and give the database account only the permissions the
+              app needs.
+            </p></div>
+          </details>
+
+          <details class="qa" name="faq" data-cat="security">
+            <summary>What does your testing workflow look like?</summary>
+            <div class="qa__body"><p>
+              Recon first (what is exposed?), then enumeration, then analysis of what the results mean, and only then
+              testing. I only test targets I own or have permission to test: my own apps, CTF platforms, and practice
+              labs. Every test ends in a written report with a fix for each finding.
+            </p></div>
+          </details>
+
+          <details class="qa" name="faq" data-cat="dev">
+            <summary>Why Flutter for mobile apps?</summary>
+            <div class="qa__body"><p>
+              One Dart codebase can target Android and iOS, hot reload keeps UI iteration fast, and the widget model makes
+              state handling explicit, which also makes it easier to see where data could leak or go wrong.
+            </p></div>
+          </details>
+
+          <details class="qa" name="faq" data-cat="dev">
+            <summary>How do you keep a PHP and MySQL project safe?</summary>
+            <div class="qa__body"><p>
+              Database access lives in one place, every query is parameterised, passwords are hashed with
+              <code>password_hash()</code>, and config values stay outside the web root. I treat every request as
+              untrusted until the server has checked it.
+            </p></div>
+          </details>
+
+          <details class="qa" name="faq" data-cat="career">
+            <summary>What are you looking for right now?</summary>
+            <div class="qa__body"><p>
+              Internships and freelance projects in application security, penetration testing, or secure development,
+              plus CTF teams to learn alongside. The contact form below is the quickest way to reach me.
+            </p></div>
+          </details>
+
+          <details class="qa" name="faq" data-cat="career">
+            <summary>How do you keep learning?</summary>
+            <div class="qa__body"><p>
+              Daily practice: write-ups, labs, CTFs, and rebuilding my own apps to see where they break. I note what each
+              finding taught me so it becomes a habit in the next project.
+            </p></div>
+          </details>
+        </div>
+        <p class="faq__empty" id="faqEmpty" hidden>No questions match that search. Try a shorter keyword, or ask me directly in the contact form.</p>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         CONTACT
+         ============================================================ -->
+    <section class="section section--alt" id="contact">
+      <div class="container">
+        <header class="section__head">
+          <p class="section__eyebrow">&lt; contact /&gt;</p>
+          <h2 class="section__title scramble">Get in Touch</h2>
+          <p class="section__desc">
+            Open to internship roles, freelance security work, or just a good CTF team-up.
+          </p>
+        </header>
+
+        <div class="contact">
+          <div class="contact__links reveal reveal--left">
+            <!-- EDIT: replace your@email.com with your real address (here and in the copy button below). -->
+            <div class="social social--copy">
+              <a class="social__main" id="emailLink" href="mailto:your@email.com">
+                <span class="social__icon" aria-hidden="true">@</span>
+                <span class="social__body">
+                  <strong>Email</strong>
+                  <small>your@email.com</small>
+                </span>
+              </a>
+              <button class="social__copy" id="copyEmail" type="button" aria-label="Copy email address">Copy</button>
+            </div>
+
+            <a class="social" href="https://github.com/Programeer12" target="_blank" rel="noopener">
+              <span class="social__icon" aria-hidden="true">&#9679;</span>
+              <span class="social__body">
+                <strong>GitHub</strong>
+                <small>@Programeer12</small>
+              </span>
+            </a>
+
+            <a class="social" href="https://www.linkedin.com/in/abin-kuriakose-027040322" target="_blank" rel="noopener">
+              <span class="social__icon" aria-hidden="true">in</span>
+              <span class="social__body">
+                <strong>LinkedIn</strong>
+                <small>/in/abin-kuriakose-027040322</small>
+              </span>
+            </a>
+          </div>
+
+          <form class="form reveal reveal--right" id="contactForm" novalidate>
+            <input type="text" name="_gotcha" class="form__trap" tabindex="-1" autocomplete="off" aria-hidden="true" />
+
+            <div class="form__row">
+              <label class="form__label" for="name">Name</label>
+              <input class="form__input" type="text" id="name" name="name" placeholder="Jane Doe" required />
+              <small class="form__error" data-error-for="name"></small>
+            </div>
+
+            <div class="form__row">
+              <label class="form__label" for="email">Email</label>
+              <input class="form__input" type="email" id="email" name="email" placeholder="jane@example.com" required />
+              <small class="form__error" data-error-for="email"></small>
+            </div>
+
+            <div class="form__row">
+              <label class="form__label" for="message">Message</label>
+              <textarea class="form__input form__input--area" id="message" name="message" rows="5" placeholder="Tell me about the role or project…" required></textarea>
+              <small class="form__error" data-error-for="message"></small>
+            </div>
+
+            <button type="submit" class="btn btn--primary btn--full">
+              Send Message
+              <span class="btn__icon" aria-hidden="true">&rarr;</span>
+            </button>
+
+            <p class="form__status" id="formStatus" role="status" aria-live="polite"></p>
+          </form>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ============================================================
+       FOOTER
+       ============================================================ -->
+  <footer class="footer">
+    <div class="container footer__inner">
+      <p class="footer__copy">
+        &copy; <span id="year">2026</span> Abin Kuriakose. All rights reserved.
+      </p>
+
+      <ul class="footer__links">
+        <li><a href="https://github.com/Programeer12" target="_blank" rel="noopener">GitHub</a></li>
+        <li><a href="https://www.linkedin.com/in/abin-kuriakose-027040322" target="_blank" rel="noopener">LinkedIn</a></li>
+        <li><a href="mailto:your@email.com" id="footerEmail">Email</a></li>
+      </ul>
+
+      <a href="#hero" class="footer__top">
+        Back to top <span aria-hidden="true">&uarr;</span>
+      </a>
+    </div>
+    <div class="container">
+      <p class="footer__sys" aria-hidden="true">
+        <span>session <b id="sessId">--------</b></span>
+        <span>local time <b id="clock">--:--:--</b></span>
+        <span>scrolled <b id="scrollPct">0</b>%</span>
+      </p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
